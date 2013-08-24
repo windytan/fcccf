@@ -141,11 +141,12 @@ function createCat(position) {
 }
 
 function generateCats() {
-	var catLocations = new Array();
+	var catLocations = [];
 	var numCats = catDefs.minAmount + Math.random()*catDefs.maxAmount;
 	var spawnSpot;
   var cats = [];
-	for (var i = 0; i < numCats; i++)
+  var i = 0;
+	for (i = 0; i < numCats; i++)
 	{
 		spawnSpot = {x: Math.random()*(ctx.canvas.width-catDefs.width/2), y: ctx.canvas.height-catDefs.height/2- Math.random()*catDefs.maxSpawnY};
 		while(!validSpawnSpot(spawnSpot, catLocations))
@@ -161,7 +162,8 @@ function generateCats() {
 
 function validSpawnSpot(position, catPosiArray) {
 	var distance = 0;
-	for(var i = 0; i < catPosiArray.length; i++)
+  var i;
+	for(i = 0; i < catPosiArray.length; i++)
 	{
 		distance = Math.sqrt(Math.pow((catPosiArray[i].x-position.x), 2) + Math.pow((catPosiArray[i].y-position.y), 2));
 		console.log(distance);
