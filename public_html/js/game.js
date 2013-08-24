@@ -37,42 +37,21 @@ var game = {
   items: Array(),
 
 	layer: [],
-	currentLayer: 0,
 
 	
 	init: function() {
-		gameWorld.init();
-		if (debug) setupDebugDraw();
+		this.layer.push(menuLayer);
+		this.layer[this.layer.length-1].init();
     document.body.style.cursor = "none";
-		
-		createLevelFrames();
-    createCat({x: 400, y: 400});
-    game.spawnItem();
-		
-		game.step();	// Start the game already!
+		game.step();
 	},
 
 	logic: function() {
-		// if (this.tick % 50 === 1) {
-		// 	createRectangular();
-		// }
-    
-    if (game.itemInHand != null) {
-      // console.log(game.cursor);
-      game.itemInHand.SetPosition(pxToM(game.cursor));
-    }
-    if (game.clicked) {
-      game.clicked = false;
-      game.dropItem();
-    }
-
-		world.Step(gameWorld.timeStep, gameWorld.velocityIterations, gameWorld.positionIterations);
-		world.ClearForces();
+    this.layer[this.layer.length-1].logic();
 	},
 
 	render: function() {
-		if (debug) world.DrawDebugData();
-		this.layer[this.currentLayer].render();
+		this.layer[this.layer.length-1].render();
 	},
 
   onClick: function (event, cursor) {
