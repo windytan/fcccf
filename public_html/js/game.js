@@ -43,9 +43,9 @@ var game = {
     document.body.style.cursor = "none";
 		
 		createLevelFrames();
-    createCat({x: 400, y: 400});
     game.spawnItem();
 		
+		generateCats();
 		game.step();	// Start the game already!
 	},
 
