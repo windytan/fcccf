@@ -110,12 +110,14 @@ function createBody(definition) {
 	
 	var body = world.CreateBody(bodyDef);
 	var fixture = body.CreateFixture(fixtureDef);
+
+  return body;
 }
 
 
 
 function createRectangular() {
-	createBody({
+	return createBody({
 		dynamic: true,
 		x: 200,
 		y: -20,
@@ -131,11 +133,11 @@ function createRectangular() {
 
 
 function createFloor() {
-	createBody({
+	return createBody({
 		dynamic: false,
-		x: 320,
-		y: 450,
-		angle: 30,
+		x: 400,
+		y: 600,
+		angle: 0,
 		friction: 0.8,
 		shape: global.shape.rectangular,
 		width: 320,
