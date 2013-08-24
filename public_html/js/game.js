@@ -34,7 +34,7 @@ var game = {
 		gameWorld.init();
 		if (debug) setupDebugDraw();
 		
-		createFloor();
+		createLevelFrames();
 		
 		game.step();	// Start the game already!
 	},

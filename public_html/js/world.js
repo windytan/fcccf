@@ -14,10 +14,10 @@ var scale = 30;
 
 var gameWorld = {
 	gravity: 9.81,
-	velocityIterations: 8,
-	positionIterations: 3,
+	velocityIterations: 16,
+	positionIterations: 6,
 	allowSleep: true,
-	timeStep: 1 / 60,
+	timeStep: 1 / 120,
 	
 	init: function() {
 		var gravity = new b2Vec2(0, this.gravity);
@@ -25,18 +25,6 @@ var gameWorld = {
 	}
 };
 
-
-
-function setupDebugDraw() {
-	var debugDraw = new b2DebugDraw();
-	debugDraw.SetSprite(ctx);
-	debugDraw.SetDrawScale(scale);
-	debugDraw.SetFillAlpha(0.3);
-	debugDraw.SetLineThickness(1.0);
-	debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
-	
-	world.SetDebugDraw(debugDraw);
-}
 
 
 var global = {
@@ -105,7 +93,7 @@ function createBody(definition) {
 		fixtureDef.shape = new b2CircleShape(definition.diameter / scale);
 	} else if (definition.shape === global.shape.rectangular) {
 		fixtureDef.shape = new b2PolygonShape;
-		fixtureDef.shape.SetAsBox(definition.width / scale, definition.height / scale);
+		fixtureDef.shape.SetAsBox(definition.width / 2 / scale, definition.height / 2 / scale);
 	}
 	
 	var body = world.CreateBody(bodyDef);
@@ -115,56 +103,12 @@ function createBody(definition) {
 }
 
 
-function createFood(position) {
-  return createBody({
-    dynamic: true,
-    x: position.x,
-    y: position.y,
-    angle: 0,
-    density: 1.0,
-    friction: 0.8,
-    restitution: 0.3,
-    shape: global.shape.circular,
-    width: 10,
-    height: 10
-  });
-}
-
-
-function createRectangular() {
-	return createBody({
-		dynamic: true,
-		x: 200,
-		y: -20,
-		angle: Math.random()*360,
-		density: 1.0,
-		friction: 0.8,
-		restitution: 0.3,
-		shape: global.shape.rectangular,
-		width: 10,
-		height: 15
-	});
-}
-
-
-function createFloor() {
-	return createBody({
-		dynamic: false,
-		x: 400,
-		y: 600,
-		angle: 0,
-		friction: 0.8,
-		shape: global.shape.rectangular,
-		width: 320,
-		height: 10
-	});
-}
-
-
 function degree(radian) {
   return radian / 180 * Math.PI;
 }
 
+
 function radian(degree) {
 	return degree / Math.PI * 180;
 }
+
