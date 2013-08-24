@@ -32,6 +32,7 @@ var game = {
 	tick: 0,
   cursor: { x: 0, y : 0 },
   clicked: false,
+  upperBorder: 100,
 
   itemInHand: null,
   items: Array(),
@@ -64,6 +65,9 @@ var game = {
   },
 
   updateCursor: function (cursor) {
+    if (cursor.y > game.upperBorder) {
+      cursor.y = game.upperBorder;
+    }
     game.cursor = cursor;
   },
 
