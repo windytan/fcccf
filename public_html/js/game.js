@@ -27,7 +27,7 @@ var game = {
 
 	logic: function() {
 		if (this.tick % 50 === 1) {
-//			createCircle();
+//			createRectangular();
 		}
 		
 		world.Step(gameWorld.timeStep, gameWorld.velocityIterations, gameWorld.positionIterations);

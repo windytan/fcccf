@@ -98,6 +98,8 @@ function createBody(definition) {
 	
 	var body = world.CreateBody(bodyDef);
 	var fixture = body.CreateFixture(fixtureDef);
+
+  return body;
 }
 
 

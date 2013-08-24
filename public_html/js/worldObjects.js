@@ -64,14 +64,14 @@ function createLevelFrames() {
 
 
 function createRectangular() {
-	createBody({
+	return createBody({
 		dynamic: true,
 		x: 200,
 		y: -20,
 		angle: Math.random()*360,
 		density: 1.0,
 		friction: 0.8,
-		restitution: 0.3,
+		restitution: 1.3,
 		shape: global.shape.rectangular,
 		width: 10,
 		height: 15
@@ -80,7 +80,7 @@ function createRectangular() {
 
 
 function createCircle() {
-	createBody({
+	return createBody({
 		restitution: 2.0
 	});
 }
