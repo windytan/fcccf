@@ -9,6 +9,7 @@ var frame = {
 	}
 };
 
+
 var catDefs = {
 	angle: 0,
 	density: 20,
@@ -22,6 +23,7 @@ var catDefs = {
 	maxSpawnY: 200,
   timeLeft: 1000
 };
+
 
 function createLevelFrames() {
 	// Ceiling
@@ -74,38 +76,6 @@ function createLevelFrames() {
 }
 
 
-
-
-function createRectangular() {
-	return createBody({
-		dynamic: true,
-		x: 200,
-		y: -20,
-		angle: Math.random()*360,
-		density: 1.0,
-		friction: 0.8,
-		restitution: 1.3,
-		shape: global.shape.rectangular,
-		width: 10,
-		height: 15
-	});
-}
-
-
-function createCircle() {
-	return createBody({
-		restitution: 2.0
-	});
-}
-
-function createPolygon() {
-	return createBody({
-		shape: global.shape.polygon,
-		points: [[0,0], [40, 50], [50, 100], [-50, 100], [-40, 50]]
-	});
-}
-
-
 function createFood(position) {
   var newFood = createBody({
     dynamic: true,
@@ -121,6 +91,7 @@ function createFood(position) {
   newFood.entityType = "food";
   return newFood;
 }
+
 
 function createCat(position) {
 	var cat = createBody({
@@ -139,6 +110,7 @@ function createCat(position) {
   cat.entityType = "cat";
   return cat;
 }
+
 
 function generateCats() {
 	var catLocations = new Array();
@@ -171,4 +143,122 @@ function validSpawnSpot(position, catPosiArray) {
 		}
 	}
 	return true;
+}
+
+
+
+
+
+
+
+
+
+// Test objects
+
+function createRectangular(x, y) {
+	return createBody({
+		dynamic: true,
+		x: x,
+		y: y,
+		angle: Math.random()*360,
+		density: 1.0,
+		friction: 0.8,
+		restitution: 1.3,
+		shape: global.shape.rectangular,
+		width: 10,
+		height: 15
+	});
+}
+
+function createCircle() {
+	return createBody({
+		restitution: 2.0
+	});
+}
+
+function createPolygon(x, y) {
+	return createBody({
+		x: x,
+		y: y,
+		shape: global.shape.polygon,
+		points: [[0,0], [40, 50], [50, 100], [-50, 100], [-40, 50]]
+	});
+}
+
+
+function createJointTest() {
+	var definition1 = {
+		x: 100,
+		y: 300,
+		shape: global.shape.polygon,
+		points: [[0,0], [40, 50], [50, 100], [-50, 100], [-40, 50]]
+	};
+	
+	var definition2 = {
+		x: 100,
+		y: 350,
+		shape: global.shape.rectangular,
+		width: 150,
+		height: 5
+	};
+	
+	var body1 = createBody(definition1);
+	var body2 = createBody(definition2);
+	
+	createJoint(body1, body2, 150, 100);
+}
+
+
+
+
+
+
+
+
+
+
+
+function createRevoluteJoint() {
+	var bodyDef1 = new b2BodyDef;
+	bodyDef1.type = b2Body.b2_dynamicBody;
+	bodyDef1.position.x = 480/scale;
+	bodyDef1.position.y = 50/scale;
+	var body1 = world.CreateBody(bodyDef1);
+	
+	var fixtureDef1 = new b2FixtureDef;
+	fixtureDef1.density = 1.0;
+	fixtureDef1.friction = 0.5;
+	fixtureDef1.restitution = 0.5;
+	fixtureDef1.shape = new b2PolygonShape;
+	fixtureDef1.shape.SetAsBox(50/scale, 10/scale);
+	
+	body1.CreateFixture(fixtureDef1);
+	
+	var bodyDef2 = new b2BodyDef;
+	bodyDef2.type = b2Body.b2_dynamicBody;
+	bodyDef2.position.x = 470/scale;
+	bodyDef2.position.y = 50/scale;
+	var body2 = world.CreateBody(bodyDef2);
+	
+	var fixtureDef2 = new b2FixtureDef;
+	fixtureDef2.density = 1.0;
+	fixtureDef2.friction = 0.5;
+	fixtureDef2.restitution = 0.5;
+	fixtureDef2.shape = new b2PolygonShape;
+	var points = [
+		new b2Vec2(0, 0),
+		new b2Vec2(40/scale, 50/scale),
+		new b2Vec2(50/scale, 100/scale),
+		new b2Vec2(-50/scale, 100/scale),
+		new b2Vec2(-40/scale, 50/scale)
+	];
+	fixtureDef2.shape.SetAsArray(points, points.length);
+	body2.CreateFixture(fixtureDef2);
+	
+	
+	var jointDef = new b2RevoluteJointDef;
+	jointCenter = new b2Vec2(470/scale, 50/scale);
+	
+	jointDef.Initialize(body1, body2, jointCenter);
+	world.CreateJoint(jointDef);
 }

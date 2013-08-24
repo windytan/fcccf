@@ -8,6 +8,8 @@ var b2MassData = Box2D.Collision.Shapes.b2MassData;
 var b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape;
 var b2CircleShape = Box2D.Collision.Shapes.b2CircleShape;
 var b2DebugDraw = Box2D.Dynamics.b2DebugDraw;
+var b2RevoluteJointDef = Box2D.Dynamics.Joints.b2RevoluteJointDef;
+
 
 var world;
 var scale = 30;
@@ -73,6 +75,24 @@ function createBody(definition) {
 	if (definition === undefined) definition = {};
 	checkDefaults(definition);
 	
+	var bodyDef = createBodyDef(definition);
+	var fixtureDef = createFixtureDef(definition);
+	
+	var body = world.CreateBody(bodyDef);
+	body.CreateFixture(fixtureDef);
+  return body;
+}
+
+/*
+function createBodies(definitions, joints) {
+	$.each(definitions, function(i, definition) {
+		var bodyDef = createBodyDefinition(definition);
+		var fixtureDef = createFixtureDefinition(definition);
+	});
+}
+*/
+
+function createBodyDef(definition) {
 	var bodyDef = new b2BodyDef;
 	
 	if (definition.dynamic)
@@ -84,6 +104,11 @@ function createBody(definition) {
 	bodyDef.position.y = definition.y / scale;
 	bodyDef.angle = degree(definition.angle);
 	
+	return bodyDef;
+}
+
+
+function createFixtureDef(definition) {
 	var fixtureDef = new b2FixtureDef;
 	fixtureDef.density = definition.density;
 	fixtureDef.friction = definition.friction;
@@ -100,11 +125,18 @@ function createBody(definition) {
 		fixtureDef.shape.SetAsArray(points, points.length);
 	}
 	
-	var body = world.CreateBody(bodyDef);
-	var fixture = body.CreateFixture(fixtureDef);
-
-  return body;
+	return fixtureDef;
 }
+
+
+function createJoint(body1, body2, x, y) {
+	var jointDef = new b2RevoluteJointDef;
+	var jointCenter = new b2Vec2(x / scale, y / scale);
+	jointDef.Initialize(body1, body2, jointCenter);
+	world.CreateJoint(jointDef);
+}
+
+
 
 function createPointVectories(points) {
 	var vecPoints = [];

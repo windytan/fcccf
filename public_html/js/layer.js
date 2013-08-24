@@ -187,6 +187,6 @@ var levelLayer = {
       }
     }
     return false;
-  },
+  }
 };
 
