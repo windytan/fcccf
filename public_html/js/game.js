@@ -64,10 +64,13 @@ var game = {
   },
 
   updateCursor: function (cursor) {
-    if (cursor.y > this.upperBorder) {
-      cursor.y = this.upperBorder;
+    var layer = game.currentLayer();
+    if (layer.upperBorder !== undefined) {
+      if (cursor.y > layer.upperBorder) {
+        cursor.y = layer.upperBorder;
+      }
     }
-    this.cursor = cursor;
+    game.cursor = cursor;
   },
 
 	step: function() {
