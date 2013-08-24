@@ -9,7 +9,7 @@ var frame = {
 	}
 };
 
-var cat = {
+var catDefs = {
 	angle: 0,
 	density: 20,
 	friction: 1,
@@ -19,7 +19,8 @@ var cat = {
 	maxAmount: 12,
 	minAmount: 3,
 	spawnDistance: 70,
-	maxSpawnY: 200
+	maxSpawnY: 200,
+  timeLeft: 1000
 };
 
 function createLevelFrames() {
@@ -106,7 +107,7 @@ function createPolygon() {
 
 
 function createFood(position) {
-  return createBody({
+  var newFood = createBody({
     dynamic: true,
     x: position.x,
     y: position.y,
@@ -117,37 +118,45 @@ function createFood(position) {
     shape: global.shape.circular,
     diameter: Math.floor(10 + Math.random()*5),
   });
+  newFood.entityType = "food";
+  return newFood;
 }
 
 function createCat(position) {
-	return createBody({
+	var cat = createBody({
 		dynamic: true,
 		x: position.x,
 		y: position.y,
-		angle: cat.angle,
-		density: cat.density,
-		friction: cat.friction, 
-		restitution: cat.restitution,
+		angle: catDefs.angle,
+		density: catDefs.density,
+		friction: catDefs.friction, 
+		restitution: catDefs.restitution,
 		shape: global.shape.rectangular,
-		width: cat.width,
-		height: cat.height
+		width: catDefs.width,
+		height: catDefs.height
 	});
+  cat.timeLeft = catDefs.timeLeft;
+  cat.entityType = "cat";
+  return cat;
 }
 
 function generateCats() {
 	var catLocations = new Array();
-	var numCats = cat.minAmount + Math.random()*cat.maxAmount;
+	var numCats = catDefs.minAmount + Math.random()*catDefs.maxAmount;
 	var spawnSpot;
+  var cats = [];
 	for (var i = 0; i < numCats; i++)
 	{
-		spawnSpot = {x: Math.random()*(ctx.canvas.width-cat.width/2), y: ctx.canvas.height-cat.height/2- Math.random()*cat.maxSpawnY};
+		spawnSpot = {x: Math.random()*(ctx.canvas.width-catDefs.width/2), y: ctx.canvas.height-catDefs.height/2- Math.random()*catDefs.maxSpawnY};
 		while(!validSpawnSpot(spawnSpot, catLocations))
 		{
-			spawnSpot = {x: Math.random()*(ctx.canvas.width-cat.width/2), y: ctx.canvas.height-cat.height/2- Math.random()*cat.maxSpawnY};
+			spawnSpot = {x: Math.random()*(ctx.canvas.width-catDefs.width/2), y: ctx.canvas.height-catDefs.height/2- Math.random()*catDefs.maxSpawnY};
 		}
 		catLocations[i] = spawnSpot;
-		createCat(catLocations[i]);
+		var cat = createCat(catLocations[i]);
+    cats.push(cat);
 	}
+  return cats;
 }
 
 function validSpawnSpot(position, catPosiArray) {
@@ -156,7 +165,7 @@ function validSpawnSpot(position, catPosiArray) {
 	{
 		distance = Math.sqrt(Math.pow((catPosiArray[i].x-position.x), 2) + Math.pow((catPosiArray[i].y-position.y), 2));
 		console.log(distance);
-		if(distance < cat.spawnDistance) 
+		if(distance < catDefs.spawnDistance) 
 		{
 			return false;
 		}
