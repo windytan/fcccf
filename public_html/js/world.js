@@ -115,6 +115,21 @@ function createBody(definition) {
 }
 
 
+function createFood(position) {
+  return createBody({
+    dynamic: true,
+    x: position.x,
+    y: position.y,
+    angle: 0,
+    density: 1.0,
+    friction: 0.8,
+    restitution: 0.3,
+    shape: global.shape.circular,
+    width: 10,
+    height: 10
+  });
+}
+
 
 function createRectangular() {
 	return createBody({

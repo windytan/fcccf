@@ -40,9 +40,9 @@ var game = {
 	},
 
 	logic: function() {
-		if (this.tick % 50 === 1) {
-			createRectangular();
-		}
+		// if (this.tick % 50 === 1) {
+		// 	createRectangular();
+		// }
 		
 		world.Step(gameWorld.timeStep, gameWorld.velocityIterations, gameWorld.positionIterations);
 		world.ClearForces();
@@ -53,7 +53,8 @@ var game = {
 	},
 
   onClick: function (event, mouse) {
-    console.log(mouse);
+    // console.log(mouse);
+    createFood(mouse);
   },
 
 	step: function() {
