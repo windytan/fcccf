@@ -94,12 +94,26 @@ function createBody(definition) {
 	} else if (definition.shape === global.shape.rectangular) {
 		fixtureDef.shape = new b2PolygonShape;
 		fixtureDef.shape.SetAsBox(definition.width / 2 / scale, definition.height / 2 / scale);
+	} else if (definition.shape === global.shape.polygon) {
+		fixtureDef.shape = new b2PolygonShape;
+		var points = createPointVectories(definition.points);
+		fixtureDef.shape.SetAsArray(points, points.length);
 	}
 	
 	var body = world.CreateBody(bodyDef);
 	var fixture = body.CreateFixture(fixtureDef);
 
   return body;
+}
+
+function createPointVectories(points) {
+	var vecPoints = [];
+	
+	$.each(points, function(i, point) {
+		vecPoints.push(new b2Vec2(point[0] / scale, point[1] / scale));
+	});
+	
+	return vecPoints;
 }
 
 

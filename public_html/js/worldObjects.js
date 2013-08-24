@@ -97,6 +97,13 @@ function createCircle() {
 	});
 }
 
+function createPolygon() {
+	return createBody({
+		shape: global.shape.polygon,
+		points: [[0,0], [40, 50], [50, 100], [-50, 100], [-40, 50]]
+	});
+}
+
 
 function createFood(position) {
   return createBody({

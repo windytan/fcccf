@@ -31,57 +31,37 @@ function withMouse (func) {
 var game = {
 	tick: 0,
 
-  cursor: { x: 0, y : 0 },
-  clicked: false,
-
-  itemInHand: null,
-  items: Array(),
+	layer: [],
+  currentLayer: function () { return this.layer[this.layer.length-1]; },
 	
 	init: function() {
-		gameWorld.init();
-		if (debug) setupDebugDraw();
-    document.body.style.cursor = "none";
-		
-		createLevelFrames();
-    game.spawnItem();
-		
-		generateCats();
-		game.step();	// Start the game already!
+		this.layer.push(menuLayer);
+		this.currentLayer().init();
+    ctx.canvas.style.cursor = "none";
+		game.step();
+
 	},
 
 	logic: function() {
-		// if (this.tick % 50 === 1) {
-		// 	createRectangular();
-		// }
-    
-    if (game.itemInHand != null) {
-      // console.log(game.cursor);
-      game.itemInHand.SetPosition(pxToM(game.cursor));
-    }
-    if (game.clicked) {
-      game.clicked = false;
-      game.dropItem();
-    }
-
-		world.Step(gameWorld.timeStep, gameWorld.velocityIterations, gameWorld.positionIterations);
-		world.ClearForces();
+    this.currentLayer().logic();
 	},
 
 	render: function() {
-		world.DrawDebugData();
+		this.currentLayer().render();
 	},
 
-  onClick: function (event, cursor) {
-    game.updateCursor(cursor);
-    game.clicked = true;
+  onClick: function(event, cursor) {
+    var layer = game.currentLayer();
+    if (layer.onClick !== undefined) {
+      layer.onClick(event, cursor);
+    }
   },
 
-  onMouseMove: function (event, cursor) {
-    game.updateCursor(cursor);
-  },
-
-  updateCursor: function (cursor) {
-    game.cursor = cursor;
+  onMouseMove: function(event, cursor) {
+    var layer = game.currentLayer();
+    if (layer.onMouseMove !== undefined) {
+      layer.onMouseMove(event, cursor);
+    }
   },
 
 	step: function() {
@@ -90,18 +70,6 @@ var game = {
 		game.render();
 		requestAnimFrame(game.step);
 	},
-
-  spawnItem: function () {
-    game.itemInHand = createFood(game.cursor);
-    game.itemInHand.SetActive(false);
-  },
-
-  dropItem: function () {
-    var droppedItem = game.itemInHand;
-    game.items.push(droppedItem);
-    droppedItem.SetActive(true);
-    game.spawnItem();
-  },
 };
 
 
