@@ -20,14 +20,14 @@ var game = {
 		gameWorld.init();
 		if (debug) setupDebugDraw();
 		
-		createFloor();
+		createLevelFrames();
 		
 		game.step();	// Start the game already!
 	},
 
 	logic: function() {
 		if (this.tick % 50 === 1) {
-			createRectangular();
+//			createCircle();
 		}
 		
 		world.Step(gameWorld.timeStep, gameWorld.velocityIterations, gameWorld.positionIterations);
