@@ -30,12 +30,15 @@ function withMouse (func) {
 
 var game = {
 	tick: 0,
-
   cursor: { x: 0, y : 0 },
   clicked: false,
 
   itemInHand: null,
   items: Array(),
+
+	layer: [],
+	currentLayer: 0,
+
 	
 	init: function() {
 		gameWorld.init();
@@ -68,7 +71,8 @@ var game = {
 	},
 
 	render: function() {
-		world.DrawDebugData();
+		if (debug) world.DrawDebugData();
+		this.layer[this.currentLayer].render();
 	},
 
   onClick: function (event, cursor) {
