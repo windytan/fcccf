@@ -91,13 +91,28 @@ function createFood(position) {
     dynamic: true,
     x: position.x,
     y: position.y,
-    angle: 0,
+    angle: Math.floor(Math.random()*360),
     density: 1.0,
     friction: 0.8,
     restitution: 0.3,
     shape: global.shape.circular,
-    width: 10,
-    height: 10
+    diameter: Math.floor(10 + Math.random()*5),
+  });
+}
+
+
+function createCat(position) {
+  return createBody({
+    dynamic: true,
+    x: position.x,
+    y: position.y,
+    angle: 30,
+    density: 1.0,
+    friction: 0.8,
+    restitution: 0.3,
+    shape: global.shape.rectangular,
+    width: 60,
+    height: 30
   });
 }
 

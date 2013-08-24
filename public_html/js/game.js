@@ -8,16 +8,17 @@ $(document).ready(function() {
   // Use this to add a callback function that takes current mouse position
   // as an additional parameter. Only makes sense for mouse events (i.e. click)
   canvas.addMouseEventListener = function (type, callback, useCapture) {
-    canvas.addEventListener(type, withMouse(ctx.canvas, callback), useCapture);
+    canvas.addEventListener(type, withMouse(callback), useCapture);
   };
   canvas.addMouseEventListener("click", game.onClick, false);
+  canvas.addMouseEventListener("mousemove", game.onMouseMove, false);
 	game.init();
 });
 
 
-function withMouse (canvas, func) {
-  var co = $(ctx.canvas).offset();
+function withMouse (func) {
   return function (event) {
+    var co = $(ctx.canvas).offset();
     var mouse = {
       x: event.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - Math.floor(co.left),
       y: event.clientY + document.body.scrollTop + document.documentElement.scrollTop - Math.floor(co.top) + 1
@@ -29,12 +30,21 @@ function withMouse (canvas, func) {
 
 var game = {
 	tick: 0,
+
+  cursor: { x: 0, y : 0 },
+  clicked: false,
+
+  itemInHand: null,
+  items: Array(),
 	
 	init: function() {
 		gameWorld.init();
 		if (debug) setupDebugDraw();
+    document.body.style.cursor = "none";
 		
 		createLevelFrames();
+    createCat({x: 400, y: 400});
+    game.spawnItem();
 		
 		game.step();	// Start the game already!
 	},
@@ -43,7 +53,16 @@ var game = {
 		// if (this.tick % 50 === 1) {
 		// 	createRectangular();
 		// }
-		
+    
+    if (game.itemInHand != null) {
+      // console.log(game.cursor);
+      game.itemInHand.SetPosition(pxToM(game.cursor));
+    }
+    if (game.clicked) {
+      game.clicked = false;
+      game.dropItem();
+    }
+
 		world.Step(gameWorld.timeStep, gameWorld.velocityIterations, gameWorld.positionIterations);
 		world.ClearForces();
 	},
@@ -52,9 +71,17 @@ var game = {
 		world.DrawDebugData();
 	},
 
-  onClick: function (event, mouse) {
-    // console.log(mouse);
-    createFood(mouse);
+  onClick: function (event, cursor) {
+    game.updateCursor(cursor);
+    game.clicked = true;
+  },
+
+  onMouseMove: function (event, cursor) {
+    game.updateCursor(cursor);
+  },
+
+  updateCursor: function (cursor) {
+    game.cursor = cursor;
   },
 
 	step: function() {
@@ -62,16 +89,20 @@ var game = {
 		game.logic();
 		game.render();
 		requestAnimFrame(game.step);
-	}
+	},
+
+  spawnItem: function () {
+    game.itemInHand = createFood(game.cursor);
+    game.itemInHand.SetActive(false);
+  },
+
+  dropItem: function () {
+    var droppedItem = game.itemInHand;
+    game.items.push(droppedItem);
+    droppedItem.SetActive(true);
+    game.spawnItem();
+  },
 };
-
-
-
-
-
-
-
-
 
 
 window.requestAnimFrame = (function(){

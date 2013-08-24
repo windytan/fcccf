@@ -112,3 +112,8 @@ function radian(degree) {
 	return degree / Math.PI * 180;
 }
 
+
+function pxToM (vector) {
+  return { x: vector.x / scale, y: vector.y / scale };
+}
+
