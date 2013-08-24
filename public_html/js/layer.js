@@ -21,25 +21,30 @@ var menuLayer = {
 };
 
 
-
 var levelLayer = {
+  cursor: { x: 0, y : 0 },
+  clicked: false,
+  upperBorder: 100,
+
+  itemInHand: null,
+  items: Array(),
+
 	init: function() {
 		gameWorld.init();
 		if (debug) setupDebugDraw();
 		
 		createLevelFrames();
 		createCat({x: 400, y: 400});
-		game.spawnItem();
+		this.spawnItem();
 	},
 	
 	logic: function() {
-		if (game.itemInHand != null) {
-      // console.log(game.cursor);
-      game.itemInHand.SetPosition(pxToM(game.cursor));
+		if (this.itemInHand != null) {
+      this.itemInHand.SetPosition(pxToM(this.cursor));
     }
-    if (game.clicked) {
-      game.clicked = false;
-      game.dropItem();
+    if (this.clicked) {
+      this.clicked = false;
+      this.dropItem();
     }
 
 		world.Step(gameWorld.timeStep, gameWorld.velocityIterations, gameWorld.positionIterations);
@@ -48,5 +53,34 @@ var levelLayer = {
 	
 	render: function() {
 		if (debug) world.DrawDebugData();
-	}
+	},
+
+  onClick: function (event, cursor) {
+    this.updateCursor(cursor);
+    this.clicked = true;
+  },
+
+  onMouseMove: function (event, cursor) {
+    this.updateCursor(cursor);
+  },
+
+  updateCursor: function (cursor) {
+    if (cursor.y > this.upperBorder) {
+      cursor.y = this.upperBorder;
+    }
+    this.cursor = cursor;
+  },
+
+  spawnItem: function () {
+    this.itemInHand = createFood(this.cursor);
+    this.itemInHand.SetActive(false);
+  },
+
+  dropItem: function () {
+    var droppedItem = this.itemInHand;
+    this.items.push(droppedItem);
+    droppedItem.SetActive(true);
+    this.spawnItem();
+  },
 };
+

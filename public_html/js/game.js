@@ -30,45 +30,37 @@ function withMouse (func) {
 
 var game = {
 	tick: 0,
-  cursor: { x: 0, y : 0 },
-  clicked: false,
-  upperBorder: 100,
-
-  itemInHand: null,
-  items: Array(),
 
 	layer: [],
-
+  currentLayer: function () { return this.layer[this.layer.length-1]; },
 	
 	init: function() {
 		this.layer.push(menuLayer);
-		this.layer[this.layer.length-1].init();
-    document.body.style.cursor = "none";
+		this.currentLayer().init();
+    ctx.canvas.style.cursor = "none";
 		game.step();
 	},
 
 	logic: function() {
-    this.layer[this.layer.length-1].logic();
+    this.currentLayer().logic();
 	},
 
 	render: function() {
-		this.layer[this.layer.length-1].render();
+		this.currentLayer().render();
 	},
 
-  onClick: function (event, cursor) {
-    game.updateCursor(cursor);
-    game.clicked = true;
-  },
-
-  onMouseMove: function (event, cursor) {
-    game.updateCursor(cursor);
-  },
-
-  updateCursor: function (cursor) {
-    if (cursor.y > game.upperBorder) {
-      cursor.y = game.upperBorder;
+  onClick: function(event, cursor) {
+    var layer = game.currentLayer();
+    if (layer.onClick !== undefined) {
+      layer.onClick(event, cursor);
     }
-    game.cursor = cursor;
+  },
+
+  onMouseMove: function(event, cursor) {
+    var layer = game.currentLayer();
+    if (layer.onMouseMove !== undefined) {
+      layer.onMouseMove(event, cursor);
+    }
   },
 
 	step: function() {
@@ -77,18 +69,6 @@ var game = {
 		game.render();
 		requestAnimFrame(game.step);
 	},
-
-  spawnItem: function () {
-    game.itemInHand = createFood(game.cursor);
-    game.itemInHand.SetActive(false);
-  },
-
-  dropItem: function () {
-    var droppedItem = game.itemInHand;
-    game.items.push(droppedItem);
-    droppedItem.SetActive(true);
-    game.spawnItem();
-  },
 };
 
 
