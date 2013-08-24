@@ -75,7 +75,7 @@ var levelLayer = {
 	clicked: false,
 	upperBorder: 100,
 	itemInHand: null,
-	items: Array(),
+	items: [],
 	
   cats: [],
   eatings: [], // List of eatings that happened this step
@@ -83,8 +83,9 @@ var levelLayer = {
 	init: function() {
 		gameWorld.init();
 
-		if (debug)
+		if (debug) {
 			setupDebugDraw();
+    }
 
     world.SetContactListener(this.contactListener());
 
@@ -94,6 +95,9 @@ var levelLayer = {
 	},
 	
 	logic: function() {
+    var i;
+    var cat;
+
 		if (this.itemInHand !== null) {
       this.itemInHand.SetPosition(pxToM(game.cursor));
     }
@@ -106,8 +110,8 @@ var levelLayer = {
 		world.ClearForces();
 
     // Handle all eatings that happened this step
-    for (var i = 0; i < this.eatings.length; ++i) {
-      var cat = this.eatings[i].cat;
+    for (i = 0; i < this.eatings.length; ++i) {
+      cat = this.eatings[i].cat;
       var food = this.eatings[i].food;
       // Only one cat can eat even if more than one cat touches the item
       var notYetEaten = this.removeItem(food);
@@ -120,8 +124,8 @@ var levelLayer = {
     this.eatings.length = 0; // clear list of eatings
 
     // Decrement all cats' time left
-    for (var i = 0; i < this.cats.length; ++i) {
-      var cat = this.cats[i];
+    for (i = 0; i < this.cats.length; ++i) {
+      cat = this.cats[i];
       cat.timeLeft -= 1;
       if (cat.timeLeft <= 0) {
         console.log("A cat just died!");
@@ -162,8 +166,9 @@ var levelLayer = {
   },
 
 	render: function() {
-		if (debug)
+		if (debug) {
 			world.DrawDebugData();
+    }
 	},
 
   spawnItem: function () {
@@ -180,7 +185,8 @@ var levelLayer = {
 
   // Remove item, return whether item was in list
   removeItem: function (item) {
-    for (var i = 0; i < this.items.length; ++i) {
+    var i;
+    for (i = 0; i < this.items.length; ++i) {
       if (this.items[i] === item) {
         this.items.splice(i, 1);
         return true;
