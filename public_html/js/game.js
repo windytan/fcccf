@@ -34,12 +34,13 @@ var game = {
 	layer: [],
   currentLayer: function () { return this.layer[this.layer.length-1]; },
 	
+  cursor: { x: 0, y: 0 },
+
 	init: function() {
 		this.layer.push(menuLayer);
 		this.currentLayer().init();
     ctx.canvas.style.cursor = "none";
 		game.step();
-
 	},
 
 	logic: function() {
@@ -50,18 +51,23 @@ var game = {
 		this.currentLayer().render();
 	},
 
-  onClick: function(event, cursor) {
+  onClick: function (event, cursor) {
+    game.updateCursor(cursor);
     var layer = game.currentLayer();
     if (layer.onClick !== undefined) {
       layer.onClick(event, cursor);
     }
   },
 
-  onMouseMove: function(event, cursor) {
-    var layer = game.currentLayer();
-    if (layer.onMouseMove !== undefined) {
-      layer.onMouseMove(event, cursor);
+  onMouseMove: function (event, cursor) {
+    game.updateCursor(cursor);
+  },
+
+  updateCursor: function (cursor) {
+    if (cursor.y > this.upperBorder) {
+      cursor.y = this.upperBorder;
     }
+    this.cursor = cursor;
   },
 
 	step: function() {

@@ -22,7 +22,6 @@ var menuLayer = {
 
 
 var levelLayer = {
-  cursor: { x: 0, y : 0 },
   clicked: false,
   upperBorder: 100,
 
@@ -40,7 +39,7 @@ var levelLayer = {
 	
 	logic: function() {
 		if (this.itemInHand != null) {
-      this.itemInHand.SetPosition(pxToM(this.cursor));
+      this.itemInHand.SetPosition(pxToM(game.cursor));
     }
     if (this.clicked) {
       this.clicked = false;
@@ -50,29 +49,17 @@ var levelLayer = {
 		world.Step(gameWorld.timeStep, gameWorld.velocityIterations, gameWorld.positionIterations);
 		world.ClearForces();
 	},
+
+  onClick: function (event, cursor) {
+    this.clicked = true;
+  },
 	
 	render: function() {
 		if (debug) world.DrawDebugData();
 	},
 
-  onClick: function (event, cursor) {
-    this.updateCursor(cursor);
-    this.clicked = true;
-  },
-
-  onMouseMove: function (event, cursor) {
-    this.updateCursor(cursor);
-  },
-
-  updateCursor: function (cursor) {
-    if (cursor.y > this.upperBorder) {
-      cursor.y = this.upperBorder;
-    }
-    this.cursor = cursor;
-  },
-
   spawnItem: function () {
-    this.itemInHand = createFood(this.cursor);
+    this.itemInHand = createFood(game.cursor);
     this.itemInHand.SetActive(false);
   },
 
