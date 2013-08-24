@@ -1,3 +1,7 @@
+function clearScreen() {
+	ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+}
+
 function setupDebugDraw() {
 	var debugDraw = new b2DebugDraw();
 	debugDraw.SetSprite(ctx);
