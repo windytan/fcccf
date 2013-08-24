@@ -3,14 +3,28 @@ var debug = true;
 var ctx;
 
 $(document).ready(function() {
-	ctx = $("canvas")[0].getContext("2d");
-	
+  var canvas = $("canvas")[0];
+	ctx = canvas.getContext("2d");
+  // Use this to add a callback function that takes current mouse position
+  // as an additional parameter. Only makes sense for mouse events (i.e. click)
+  canvas.addMouseEventListener = function (type, callback, useCapture) {
+    canvas.addEventListener(type, withMouse(ctx.canvas, callback), useCapture);
+  };
+  canvas.addMouseEventListener("click", game.onClick, false);
 	game.init();
 });
 
 
-
-
+function withMouse (canvas, func) {
+  var co = $(ctx.canvas).offset();
+  return function (event) {
+    var mouse = {
+      x: event.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - Math.floor(co.left),
+      y: event.clientY + document.body.scrollTop + document.documentElement.scrollTop - Math.floor(co.top) + 1
+    };
+    func(event, mouse);
+  };
+}
 
 
 var game = {
@@ -37,6 +51,10 @@ var game = {
 	render: function() {
 		world.DrawDebugData();
 	},
+
+  onClick: function (event, mouse) {
+    console.log(mouse);
+  },
 
 	step: function() {
 		game.tick++;
