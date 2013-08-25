@@ -30,7 +30,6 @@ function withMouse (func) {
 
 var game = {
 	tick: 0,
-
 	layer: [],
   currentLayer: function () { return this.layer[this.layer.length-1]; },
 	
@@ -45,6 +44,7 @@ var game = {
 
 	logic: function() {
     this.currentLayer().logic();
+	
 	},
 
 	render: function() {

@@ -12,7 +12,7 @@ var frame = {
 
 var catDefs = {
 	angle: 0,
-	density: 20,
+	density: 2,
 	friction: 1,
 	restitution: 0.1,
 	width: 50,
@@ -138,7 +138,6 @@ function validSpawnSpot(position, catPosiArray) {
 	for(i = 0; i < catPosiArray.length; i++)
 	{
 		distance = Math.sqrt(Math.pow((catPosiArray[i].x-position.x), 2) + Math.pow((catPosiArray[i].y-position.y), 2));
-		console.log(distance);
 		if(distance < catDefs.spawnDistance) 
 		{
 			return false;
