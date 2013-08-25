@@ -1,15 +1,33 @@
+var buttonType = {
+	circle: 0,
+	rectangular: 1
+};
 
 var menuLayer = {
 	buttons: [],
 	
 	init: function() {
-		this.buttons.push(createButton(100, 200, 60, 60, function() {
-			game.layer.push(levelLayer);
-			game.currentLayer().init(0);
+		
+		this.buttons.push(createButton({
+			type: buttonType.circle,
+			x: 340,
+			y: 522,
+			radius: 65,
+			callback: function() {
+				game.layer.push(levelLayer);
+				game.currentLayer().init(0);
+			}
 		}));
 
-		this.buttons.push(createButton(40, 550, 200, 50, function() {
-			game.layer.push(creditsLayer);
+		this.buttons.push(createButton({
+			type: buttonType.rectangular,
+			x: 590,
+			y: 580,
+			width: 200,
+			height: 50,
+			callback: function() {
+				game.layer.push(creditsLayer);
+			}
 		}));
 	},
 	
@@ -21,8 +39,9 @@ var menuLayer = {
 		clearScreen();
 		drawBackground("menu");
 		ctx.fillStyle = "#ff9933";
+		
 		$.each(this.buttons, function(i, button) {
-			ctx.fillRect(button.x, button.y, button.width, button.height);
+			button.render();
 		});
 
 		ctx.fillStyle = "#ffc0cb";
@@ -31,25 +50,47 @@ var menuLayer = {
 	
 	onClick: function(event, cursor) {
 		$.each(this.buttons, function(i, button) {
-			if (cursor.x > button.x &&
-							cursor.x < button.x + button.width &&
-							cursor.y > button.y &&
-							cursor.y < button.y + button.height) {
+			if (button.isInRange(cursor.x, cursor.y))
 				button.callback();
-			}
 		});
 	}
 };
 
 
-function createButton(x, y, width, height, callback) {
-	return {
-		x: x,
-		y: y,
-		width: width,
-		height: height,
-		callback: callback
-	};
+function createButton(def) {
+	if (def.type === buttonType.circle) {
+		return {
+			x: def.x,
+			y: def.y,
+			radius: def.radius,
+			callback: def.callback,
+			
+			isInRange: function(x, y) {
+				var distance = Math.sqrt(Math.pow(this.x-x, 2) + Math.pow(this.y-y, 2));
+				return distance < this.radius;
+			},
+			render: function() {
+				//ctx.arc(this.x, this.y, this.radius, 0, 2*Math.PI);
+				//ctx.stroke();
+			}
+		};
+	} else if (def.type === buttonType.rectangular) {
+		return {
+			x: def.x,
+			y: def.y,
+			width: def.width,
+			height: def.height,
+			callback: def.callback,
+
+			isInRange: function(x, y) {
+				return x > this.x && x < this.x + this.width &&
+							 y > this.y && y < this.y + this.height;
+			},
+			render: function() {
+				ctx.fillRect(this.x, this.y, this.width, this.height);
+			}
+		};
+	}
 }
 
 
@@ -205,9 +246,8 @@ var levelLayer = {
 	render: function() {
 		clearScreen();
 			
-		if (debug) {
+		if (debug)
 			world.DrawDebugData();
-    }
 		
 	  drawBackground("ingame");
     this.props.forEach(drawProp);
@@ -221,6 +261,7 @@ var levelLayer = {
     ctx.drawImage(img, -w/2, -h/2 - 20, w, h);
     ctx.restore();
     this.items.forEach(drawItem);
+
     if(this.itemInHand!==null) {
       drawItem(this.itemInHand);
     }
