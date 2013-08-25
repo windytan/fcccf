@@ -5,7 +5,7 @@ var menuLayer = {
 	init: function() {
 		this.buttons.push(createButton(100, 200, 60, 60, function() {
 			game.layer.push(levelLayer);
-			game.currentLayer().init();
+			game.currentLayer().init(0);
 		}));
 
 		this.buttons.push(createButton(40, 550, 200, 50, function() {
@@ -71,27 +71,26 @@ var creditsLayer = {
 };
 
 
+
 var levelLayer = {
 	clicked: false,
 	upperBorder: 100,
 	itemInHand: null,
 	items: [],
+	levelNumber: 0,
 	
   cats: [],
   eatings: [], // List of eatings that happened this step
                // Eatings are objects of form {cat, food}
-	init: function() {
+	init: function(levelNumber) {
+		this.levelNumber = levelNumber;
 		gameWorld.init();
 
-		if (debug) {
+		if (debug)
 			setupDebugDraw();
-    }
 
     world.SetContactListener(this.contactListener());
-
-		createLevelFrames();
-		this.cats = generateCats();
-		this.spawnItem();
+		createLevel(this.levelNumber);
 	},
 	
 	logic: function() {

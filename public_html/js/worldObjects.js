@@ -138,7 +138,6 @@ function validSpawnSpot(position, catPosiArray) {
 	for(i = 0; i < catPosiArray.length; i++)
 	{
 		distance = Math.sqrt(Math.pow((catPosiArray[i].x-position.x), 2) + Math.pow((catPosiArray[i].y-position.y), 2));
-		console.log(distance);
 		if(distance < catDefs.spawnDistance) 
 		{
 			return false;
@@ -178,6 +177,7 @@ function createCircle() {
 	});
 }
 
+
 function createPolygon(x, y) {
 	return createBody({
 		x: x,
@@ -189,28 +189,70 @@ function createPolygon(x, y) {
 
 
 function createJointTest() {
-	var definition1 = {
-		x: 100,
-		y: 300,
-		shape: global.shape.polygon,
-		points: [[0,0], [40, 50], [50, 100], [-50, 100], [-40, 50]]
-	};
+	var x = 200;
+	var y = 400;
 	
-	var definition2 = {
-		x: 100,
-		y: 350,
+	var body1 = createBody({
+		x: x,
+		y: y,
 		shape: global.shape.rectangular,
-		width: 150,
-		height: 5
-	};
+		width: 200,
+		height: 50,
+		density: 10
+	});
+	var body2 = createBody({
+		x: x-95,
+		y: y+20,
+		shape: global.shape.rectangular,
+		width: 50,
+		height: 10,
+		friction: 0.9
+	});
+	var body3 = createBody({
+		x: x+95,
+		y: y+20,
+		shape: global.shape.rectangular,
+		width: 50,
+		height: 10,
+		friction: 0.9
+	});
 	
-	var body1 = createBody(definition1);
-	var body2 = createBody(definition2);
-	
-	createJoint(body1, body2, 150, 100);
+	createMotorJoint(body1, body2, {x: x-95, y: y+20, speed: 180, torque: 10000});
+	createMotorJoint(body1, body3, {x: x+95, y: y+20, speed: 180, torque: 10000});
+
 }
 
 
+
+function createPropeller(def) {
+	defaults.propeller(def);
+	
+	var anchor = createBody({
+		dynamic: false,
+		x: def.x,
+		y: def.y,
+		shape: global.shape.circle,
+		diameter: 1
+	});
+	
+	var propeller = createBody({
+		x: def.x,
+		y: def.y,
+		angle: def.angle,
+		density: 100,
+		shape: global.shape.rectangular,
+		width: def.width,
+		height: def.height
+	});
+	
+	createMotorJoint(anchor, propeller, {
+		x: def.x,
+		y: def.y,
+		speed: def.speed,
+		torque: def.torque,
+		clockwise: def.clockwise
+	});
+}
 
 
 

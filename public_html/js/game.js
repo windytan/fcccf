@@ -1,4 +1,6 @@
 var debug = true;
+var startingLayer = menuLayer;
+var startingLevelNumber = 0;
 
 var ctx;
 
@@ -37,8 +39,15 @@ var game = {
   cursor: { x: 0, y: 0 },
 
 	init: function() {
-		this.layer.push(menuLayer);
-		this.currentLayer().init();
+		if (debug) {
+			this.layer.push(startingLayer);
+			this.currentLayer().init(startingLevelNumber);
+		} else {
+			this.layer.push(menuLayer);
+			this.currentLayer().init();
+		}
+		
+		
     ctx.canvas.style.cursor = "none";
 		game.step();
 	},

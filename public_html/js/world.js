@@ -20,7 +20,7 @@ var gameWorld = {
 	positionIterations: 6,
 	allowSleep: true,
 	timeStep: 1 / 120,
-	
+
 	init: function() {
 		var gravity = new b2Vec2(0, this.gravity);
 		world = new b2World(gravity, this.allowSleep);
@@ -38,46 +38,51 @@ var global = {
 };
 
 
-var def = {
-		body: {
-			dynamic: true,
-			x: 400,
-			y: 320,
-			angle: 0,
-			density: 1.0,
-			friction: 1.0,
-			restitution: 0.0,
-			shape: global.shape.circle,
-			diameter: 10,
-			width: 10,
-			height: 10
-		}
+var defaults = {
+	body: function(def) {
+		if (def.dynamic === undefined) def.dynamic = true;
+		if (def.x === undefined) def.x = 400;
+		if (def.y === undefined) def.y = 320;
+		if (def.angle === undefined) def.angle = 0;
+	},
+	
+	fixture: function(def) {
+		if (def.density === undefined) def.density = 1.0;
+		if (def.friction === undefined) def.friction = 1.0;
+		if (def.restitution === undefined) def.restitution = 0.0;
+		if (def.shape === undefined) def.shape = global.shape.circle;
+		if (def.width === undefined) def.width = 10;
+		if (def.height === undefined) def.height = 10;
+		if (def.diameter === undefined) def.diameter = 10;
+		return def;
+	},
+	
+	joint: function(def) {
+		
+	},
+	
+	motorJoint: function(def) {
+		if (def.x === undefined) def.x = 400;
+		if (def.y === undefined) def.y = 320;
+		if (def.speed === undefined) def.speed = 45;
+		if (def.torque === undefined) def.torque = 100;
+		if (def.clockwise === undefined) def.clockwise = true;
+	},
+	
+	propeller: function(def) {
+		if (def.width === undefined) def.width = 150;
+		if (def.height === undefined) def.height = 10;
+		if (def.speed === undefined) def.speed = 360;
+		if (def.torque === undefined) def.torque = 100000;
+	}
 };
 
 
-function checkDefaults(definition) {
-	if (definition.dynamic === undefined) definition.dynamic = def.body.dynamic;
-	if (definition.x === undefined) definition.x = def.body.x;
-	if (definition.y === undefined) definition.y = def.body.y;
-	if (definition.angle === undefined) definition.angle = def.body.angle;
-	if (definition.density === undefined) definition.density = def.body.density;
-	if (definition.friction === undefined) definition.friction = def.body.friction;
-	if (definition.restitution === undefined) definition.restitution = def.body.restitution;
-	if (definition.shape === undefined) definition.shape = def.body.shape;
-	if (definition.width === undefined) definition.width = def.body.width;
-	if (definition.height === undefined) definition.height = def.body.height;
-	if (definition.diameter === undefined) definition.diameter = def.body.diameter;
-	return definition;
-}
-
 
 function createBody(definition) {
-	if (definition === undefined) definition = {};
-	checkDefaults(definition);
-	
 	var bodyDef = createBodyDef(definition);
 	var fixtureDef = createFixtureDef(definition);
-	
+
 	var body = world.CreateBody(bodyDef);
 	body.CreateFixture(fixtureDef);
   return body;
@@ -93,27 +98,29 @@ function createBodies(definitions, joints) {
 */
 
 function createBodyDef(definition) {
+	defaults.body(definition);
 	var bodyDef = new b2BodyDef;
-	
+
 	if (definition.dynamic)
 		bodyDef.type = b2Body.b2_dynamicBody;
 	else
 		bodyDef.type = b2Body.b2_staticBody;
-	
+
 	bodyDef.position.x = definition.x / scale;
 	bodyDef.position.y = definition.y / scale;
-	bodyDef.angle = degree(definition.angle);
-	
+	bodyDef.angle = toRadians(definition.angle);
+
 	return bodyDef;
 }
 
 
 function createFixtureDef(definition) {
+	defaults.fixture(definition);
 	var fixtureDef = new b2FixtureDef;
 	fixtureDef.density = definition.density;
 	fixtureDef.friction = definition.friction;
 	fixtureDef.restitution = definition.restitution;
-	
+
 	if (definition.shape === global.shape.circle) {
 		fixtureDef.shape = new b2CircleShape(definition.diameter / scale);
 	} else if (definition.shape === global.shape.rectangular) {
@@ -124,42 +131,53 @@ function createFixtureDef(definition) {
 		var points = createPointVectories(definition.points);
 		fixtureDef.shape.SetAsArray(points, points.length);
 	}
-	
+
 	return fixtureDef;
 }
 
 
-function createJoint(body1, body2, x, y) {
+function createJoint(bodyA, bodyB, x, y) {
 	var jointDef = new b2RevoluteJointDef;
 	var jointCenter = new b2Vec2(x / scale, y / scale);
-	jointDef.Initialize(body1, body2, jointCenter);
-	world.CreateJoint(jointDef);
+	jointDef.Initialize(bodyA, bodyB, jointCenter);
+	return world.CreateJoint(jointDef);
 }
 
+
+function createMotorJoint(bodyA, bodyB, def) {
+	defaults.motorJoint(def);
+	var joint = createJoint(bodyA, bodyB, def.x, def.y);
+	joint.EnableMotor(true);
+	if (def.clockwise)
+		joint.SetMotorSpeed(toRadians(def.speed));
+	else
+		joint.SetMotorSpeed(toRadians(-def.speed));
+	
+	joint.SetMaxMotorTorque(def.torque);
+}
 
 
 function createPointVectories(points) {
 	var vecPoints = [];
-	
+
 	$.each(points, function(i, point) {
 		vecPoints.push(new b2Vec2(point[0] / scale, point[1] / scale));
 	});
-	
+
 	return vecPoints;
 }
 
 
-function degree(radian) {
-  return radian / 180 * Math.PI;
+function toRadians(degrees) {
+  return degrees / 180 * Math.PI;
 }
 
 
-function radian(degree) {
-	return degree / Math.PI * 180;
+function toDegrees(radians) {
+	return radians / Math.PI * 180;
 }
 
 
 function pxToM (vector) {
   return { x: vector.x / scale, y: vector.y / scale };
 }
-
