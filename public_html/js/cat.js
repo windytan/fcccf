@@ -16,8 +16,10 @@ var catDefs = {
   states: {
     normal: 0.75,
     hungry: 0.5,
-    starving: -1
+    starving: 0,
+    dead: -1000000
   },
+  removeAt: -500,
 	jumpingPower: 60,
 	canDie: true
 };

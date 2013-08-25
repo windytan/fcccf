@@ -6,7 +6,8 @@ var imageDefs = {
   cat: {
     normal: "cat_normal_texture.png",
     hungry: "cat_hungry_texture.png",
-    starving: "cat_starving_texture.png"
+    starving: "cat_starving_texture.png",
+    dead: "cat_dead_texture.png"
   },
 
   cheezburger: {
