@@ -1,5 +1,5 @@
 var debug = true;
-var startingLayer = menuLayer;
+var startingLayer = levelLayer;
 var startingLevelNumber = 0;
 
 var ctx;
