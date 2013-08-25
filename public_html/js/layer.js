@@ -139,6 +139,14 @@ var levelLayer = {
         }
       }
     }
+
+    // Decrement all items' time left
+    for (i = 0; i < this.items.length; ++i) {
+      item = this.items[i];
+      if (item.timeLeft > 0) {
+        item.timeLeft -= 1;
+      }
+    }
 	},
 
   onClick: function (event, cursor) {

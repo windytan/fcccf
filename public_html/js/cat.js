@@ -66,7 +66,26 @@ function createCat(position) {
 	
   cat.timeLeft = catDefs.timeLeft;
   cat.entityType = "cat";
+  cat.catColor = randomColor();
   return cat;
+}
+
+
+function randomColor () {
+  var r, g, b;
+  var bottom = 128;
+  var range = 256 - bottom;
+  r = randomInt(range);
+  do {
+    g = randomInt(range);
+  }
+  while (Math.abs(r - g) < 20);
+  do {
+    b = randomInt(range);
+  }
+  while (b > r && b > g);
+
+  return { r: bottom + r,  g: bottom + g, b: bottom + b };
 }
 
 

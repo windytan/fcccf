@@ -10,11 +10,13 @@ var imageDefs = {
   },
 
   cheezburger: {
-    normal: "cheezburger.png"
+    normal: "cheezburger.png",
+    rotten: "cheezburger_rotten.png"
   },
 
   fish: {
-    normal: "fish.png"
+    normal: "fish.png",
+    rotten: "fish_rotten.png"
   }
 };
 
@@ -51,6 +53,9 @@ function drawCat (cat) {
 	var o = textureOverBody;
   var state = catState(cat);
   var img = game.images.cat[state];
+  var c = cat.catColor;
+  ctx.fillStyle = "rgb(" + c.r + "," + c.g + "," + c.b + ")";
+  ctx.fillRect(-w/2, -h/2, w, h);
   ctx.drawImage(img, -w/2-o, -h/2-o, w+o*2, h+o*2);
   ctx.restore();
 }
@@ -61,9 +66,10 @@ function drawItem (item) {
   transformWorld(item);
   if (item.entityType === "food") {
     var type = item.foodType;
+    var state = foodState(item);
     var w = foodDefs.types[type].width;
     var h = foodDefs.types[type].height;
-    var img = game.images[type].normal;
+    var img = game.images[type][state];
     ctx.drawImage(img, -w/2, -h/2, w, h);
   }
   else {
