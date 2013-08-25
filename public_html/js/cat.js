@@ -16,7 +16,8 @@ var catDefs = {
   states: {
     normal: 0.75,
     hungry: 0.5,
-    starving: -1
+    starving: 0,
+    dead: -1000000
   },
 	rotationMultiplier: {
 		straightenStrong: 0.00025,
@@ -24,6 +25,7 @@ var catDefs = {
 		over90Degrees: 0.000125,
 		velocityReducer: 0.005
 	},
+  removeAt: -500,
 	jumpingPower: 60,
 	canDie: true // true
 };
@@ -176,14 +178,20 @@ var catAI = {
 		if(0<this.zeFood.length) {
             for(i =0; i < this.zeFood.length; i++)
 		    {
-                d = this.distance(this.cats[index].GetPosition(), this.zeFood[i].GetPosition());
-				if(d<shortestD)
-				{
-				    shortestD = d;
-					foodToReturn = i;
+				console.log(foodState(this.zeFood[i]));
+				if(foodState(this.zeFood[i])!="rotten") {
+					d = this.distance(this.cats[index].GetPosition(), this.zeFood[i].GetPosition());
+					if(d<shortestD)
+					{
+						shortestD = d;
+						foodToReturn = i;
+					}
 				}
 		    }
-			return this.zeFood[foodToReturn].GetPosition();
+			if(shortestD != Number.MAX_VALUE)
+			{
+				return this.zeFood[foodToReturn].GetPosition();
+			}
 		}
 		return 0;
 	},
