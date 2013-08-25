@@ -19,8 +19,8 @@ function loadResourcesAndRunInit (gameObject) {
   var loadedCount = 0;
 
   var checkReady = function() {
-    console.log("Loaded:", this.src);
     loadedCount += 1;
+    console.log("Loaded %d/%d: %s", loadedCount, count, this.src);
     if (loadedCount === count) {
       // All images loaded
       console.log("All images (%d) loaded, running game.init...", loadedCount);
