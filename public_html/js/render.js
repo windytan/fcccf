@@ -1,5 +1,5 @@
-
-var textureOverBody = 5;
+var catTextureOverBody = 5;
+var itemTextureOverBody = 2;
 
 
 var imageDefs = {
@@ -53,7 +53,7 @@ function drawCat (cat) {
   transformWorld(cat);
   var w = catDefs.width;
   var h = catDefs.height;
-	var o = textureOverBody;
+	var o = catTextureOverBody;
   var state = catState(cat);
   var img = game.images.cat[state];
   var c = cat.catColor;
@@ -72,8 +72,9 @@ function drawItem (item) {
     var state = foodState(item);
     var w = foodDefs.types[type].width;
     var h = foodDefs.types[type].height;
+		var o = itemTextureOverBody;
     var img = game.images[type][state];
-    ctx.drawImage(img, -w/2, -h/2, w, h);
+    ctx.drawImage(img, -w/2-o, -h/2-o, w+o*2, h+o*2);
   }
   else {
     ctx.strokeStyle = "blue";
