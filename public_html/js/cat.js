@@ -170,14 +170,20 @@ var catAI = {
 		if(0<this.zeFood.length) {
             for(i =0; i < this.zeFood.length; i++)
 		    {
-                d = this.distance(this.cats[index].GetPosition(), this.zeFood[i].GetPosition());
-				if(d<shortestD)
-				{
-				    shortestD = d;
-					foodToReturn = i;
+				console.log(foodState(this.zeFood[i]));
+				if(foodState(this.zeFood[i])!="rotten") {
+					d = this.distance(this.cats[index].GetPosition(), this.zeFood[i].GetPosition());
+					if(d<shortestD)
+					{
+						shortestD = d;
+						foodToReturn = i;
+					}
 				}
 		    }
-			return this.zeFood[foodToReturn].GetPosition();
+			if(shortestD != Number.MAX_VALUE)
+			{
+				return this.zeFood[foodToReturn].GetPosition();
+			}
 		}
 		return 0;
 	},

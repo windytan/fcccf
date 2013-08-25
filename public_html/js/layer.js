@@ -181,14 +181,15 @@ var levelLayer = {
 
 	render: function() {
 		clearScreen();
-		
+			
 		if (debug) {
 			world.DrawDebugData();
     }
-		
+	drawBackground("ingame");
     this.cats.forEach(drawCat);
     this.items.forEach(drawItem);
     drawItem(this.itemInHand);
+	drawBackground("foreground");
 	},
 
   spawnItem: function () {
