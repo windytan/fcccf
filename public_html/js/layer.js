@@ -19,7 +19,7 @@ var menuLayer = {
 	
 	render: function() {
 		clearScreen();
-
+		drawBackground("menu");
 		ctx.fillStyle = "#ff9933";
 		$.each(this.buttons, function(i, button) {
 			ctx.fillRect(button.x, button.y, button.width, button.height);

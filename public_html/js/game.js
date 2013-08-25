@@ -1,5 +1,5 @@
 var debug = true;
-var startingLayer = levelLayer;
+var startingLayer = menuLayer;
 var startingLevelNumber = 0;
 
 var ctx;
@@ -136,7 +136,7 @@ var game = {
 };
 
 function startMusic() {
-  var music = new Audio('snd/kokomjau.wav');
+  var music = new Audio('snd/kokomjau.ogg');
   music.loop = true;
   music.play();
 }
