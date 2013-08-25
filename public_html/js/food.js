@@ -6,13 +6,13 @@ var foodDefs = {
   restitution: 0.3,
   types: {
     fish: {
-      width: 40,
+      width: 60,
       height: 20
     },
 
     cheezburger: {
-      width: 20,
-      height: 20
+      width: 30,
+      height: 30
     }
   }
 };
