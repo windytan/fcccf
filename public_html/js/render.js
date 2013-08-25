@@ -60,9 +60,9 @@ function drawItem (item) {
   ctx.save();
   transformWorld(item);
   if (item.entityType === "food") {
-    var w = catDefs.width;
-    var h = catDefs.height;
     var type = item.foodType;
+    var w = foodDefs.types[type].width;
+    var h = foodDefs.types[type].height;
     var img = game.images[type].normal;
     ctx.drawImage(img, -w/2, -h/2, w, h);
   }
