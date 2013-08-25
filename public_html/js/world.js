@@ -190,3 +190,9 @@ function toDegrees(radians) {
 function pxToM (vector) {
   return { x: vector.x / scale, y: vector.y / scale };
 }
+
+
+function mToPx (vector) {
+  return { x: vector.x * scale, y: vector.y * scale };
+}
+

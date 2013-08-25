@@ -96,6 +96,7 @@ var levelLayer = {
 	logic: function() {
     var i;
     var cat;
+		
 		catAI.logic();
 	
 		if (this.itemInHand !== null) {
@@ -169,6 +170,10 @@ var levelLayer = {
 		if (debug) {
 			world.DrawDebugData();
     }
+
+    this.cats.forEach(drawCat);
+    this.items.forEach(drawItem);
+    drawItem(this.itemInHand);
 	},
 
   spawnItem: function () {
