@@ -1,6 +1,15 @@
+
+var imageDefs = {
+  cat: {
+    normal: "cat_normal_texture.png"
+  }
+};
+
+
 function clearScreen() {
 	ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 }
+
 
 function setupDebugDraw() {
 	var debugDraw = new b2DebugDraw();
@@ -13,6 +22,7 @@ function setupDebugDraw() {
 	world.SetDebugDraw(debugDraw);
 }
 
+
 function transformWorld (thingy) {
   var pos = mToPx(thingy.GetPosition());
   ctx.translate(pos.x, pos.y);
@@ -22,12 +32,14 @@ function transformWorld (thingy) {
 
 function drawCat (cat) {
   ctx.save();
-  ctx.fillStyle = "red";
+  // ctx.fillStyle = "red";
   transformWorld(cat);
   var w = catDefs.width;
   var h = catDefs.height;
-  ctx.translate(-w/2, -h/2);
-  ctx.fillRect(0, 0, w, h);
+  // ctx.translate(-w/2, -h/2);
+  // ctx.fillRect(0, 0, w, h);
+  var img = game.images.cat.normal;
+  ctx.drawImage(img, -w / 2, -h / 2, w, h);
   ctx.restore();
 }
 

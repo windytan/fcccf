@@ -82,6 +82,9 @@ var levelLayer = {
   cats: [],
   eatings: [], // List of eatings that happened this step
                // Eatings are objects of form {cat, food}
+  
+  imgCat: null,
+
 	init: function(levelNumber) {
 		this.levelNumber = levelNumber;
 		gameWorld.init();

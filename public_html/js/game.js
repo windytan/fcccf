@@ -14,8 +14,48 @@ $(document).ready(function() {
   };
   canvas.addMouseEventListener("click", game.onClick, false);
   canvas.addMouseEventListener("mousemove", game.onMouseMove, false);
-	game.init();
+
+  loadResourcesAndRunInit(game);
 });
+
+
+function loadResourcesAndRunInit (gameObject) {
+  var images = {};
+  var count = 0;
+  var loadedCount = 0;
+
+  var checkReady = function() {
+    console.log("Loaded:", this.src);
+    loadedCount += 1;
+    if (loadedCount === count) {
+      // All images loaded
+      console.log("All images (%d) loaded, running game.init...", loadedCount);
+      gameObject.images = images;
+      gameObject.init();
+    }
+  };
+
+  var loadImage = function (src) {
+    src = "img/" + src;
+    // console.log("Loading image:", src);
+    var img = new Image();
+    img.onload = checkReady;
+    img.src = src;
+    return img;
+  };
+
+  console.log("Loading images...");
+  var entity;
+  var imageType;
+  // Note: no isOwnProperty here, don't pass objects with stuff in the prototype!
+  for (entity in imageDefs) {
+    images[entity] = {};
+    for (imageType in imageDefs[entity]) {
+      images[entity][imageType] = loadImage(imageDefs[entity][imageType]);
+      count += 1;
+    }
+  }
+}
 
 
 function withMouse (func) {
@@ -36,8 +76,13 @@ var game = {
   currentLayer: function () { return this.layer[this.layer.length-1]; },
 	
   cursor: { x: 0, y: 0 },
+  images: null,
 
 	init: function() {
+    if (game.images == null) {
+      console.log("Error: game.images is", game.images);
+    }
+
 		if (debug) {
 			this.layer.push(startingLayer);
 			this.currentLayer().init(startingLevelNumber);
@@ -45,7 +90,6 @@ var game = {
 			this.layer.push(menuLayer);
 			this.currentLayer().init();
 		}
-		
 		
     ctx.canvas.style.cursor = "none";
 		game.step();
