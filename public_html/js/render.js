@@ -1,7 +1,9 @@
 
 var imageDefs = {
   cat: {
-    normal: "cat_normal_texture.png"
+    normal: "cat_normal_texture.png",
+    hungry: "cat_hungry_texture.png",
+    starving: "cat_starving_texture.png"
   }
 };
 
@@ -38,7 +40,8 @@ function drawCat (cat) {
   var h = catDefs.height;
   // ctx.translate(-w/2, -h/2);
   // ctx.fillRect(0, 0, w, h);
-  var img = game.images.cat.normal;
+  var state = catState(cat);
+  var img = game.images.cat[state];
   ctx.drawImage(img, -w / 2, -h / 2, w, h);
   ctx.restore();
 }

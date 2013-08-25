@@ -1,3 +1,4 @@
+
 var catDefs = {
 	angle: 0,
 	density: 2,
@@ -10,8 +11,27 @@ var catDefs = {
 	spawnDistance: 70,
 	maxSpawnY: 200,
   timeLeft: 1000,
-	bottomRestitution: 1.2
+	bottomRestitution: 1.2,
+  // States and their lower thresholds (where 1 is healthy and 0 is dead)
+  states: {
+    normal: 0.75,
+    hungry: 0.5,
+    starving: -1
+  }
 };
+
+
+function catState(cat) {
+  var x = cat.timeLeft / catDefs.timeLeft;
+  var state;
+  for (state in catDefs.states) {
+    var lowerThreshold = catDefs.states[state];
+    if (x >= lowerThreshold) {
+      return state;
+    }
+  }
+  console.log("Error: No cat state matches timeLeft = ", cat.timeLeft);
+}
 
 
 function createCat(position) {

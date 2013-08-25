@@ -97,7 +97,6 @@ var game = {
 
 	logic: function() {
     this.currentLayer().logic();
-	
 	},
 
 	render: function() {
