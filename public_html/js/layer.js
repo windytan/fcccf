@@ -96,7 +96,8 @@ var levelLayer = {
 	logic: function() {
     var i;
     var cat;
-
+		catAI.logic();
+	
 		if (this.itemInHand !== null) {
       this.itemInHand.SetPosition(pxToM(game.cursor));
     }

@@ -1,5 +1,5 @@
 var debug = true;
-var startingLayer = menuLayer;
+var startingLayer = levelLayer;
 var startingLevelNumber = 0;
 
 var ctx;
@@ -32,7 +32,6 @@ function withMouse (func) {
 
 var game = {
 	tick: 0,
-
 	layer: [],
   currentLayer: function () { return this.layer[this.layer.length-1]; },
 	
@@ -54,6 +53,7 @@ var game = {
 
 	logic: function() {
     this.currentLayer().logic();
+	
 	},
 
 	render: function() {

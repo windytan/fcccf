@@ -9,6 +9,7 @@ var b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape;
 var b2CircleShape = Box2D.Collision.Shapes.b2CircleShape;
 var b2DebugDraw = Box2D.Dynamics.b2DebugDraw;
 var b2RevoluteJointDef = Box2D.Dynamics.Joints.b2RevoluteJointDef;
+var b2WeldJointDef = Box2D.Dynamics.Joints.b2WeldJointDef;
 
 
 var world;
@@ -138,6 +139,14 @@ function createFixtureDef(definition) {
 
 function createJoint(bodyA, bodyB, x, y) {
 	var jointDef = new b2RevoluteJointDef;
+	var jointCenter = new b2Vec2(x / scale, y / scale);
+	jointDef.Initialize(bodyA, bodyB, jointCenter);
+	return world.CreateJoint(jointDef);
+}
+
+
+function createWeldJoint(bodyA, bodyB, x, y) {
+	var jointDef = new b2WeldJointDef;
 	var jointCenter = new b2Vec2(x / scale, y / scale);
 	jointDef.Initialize(bodyA, bodyB, jointCenter);
 	return world.CreateJoint(jointDef);

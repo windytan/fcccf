@@ -4,6 +4,7 @@ function createLevel(levelNumber) {
 	
 	createLevelFrames();
 	levelLayer.cats = generateCats();
+	catAI.init(levelLayer.cats);
 	levelLayer.spawnItem();
 	
 	switch(levelNumber) {
@@ -17,7 +18,6 @@ function createLevel(levelNumber) {
 
 
 function createDebugLevel() {
-	createJointTest();
 	createPropeller({
 		x: 650,
 		y: 430,
