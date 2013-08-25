@@ -1,13 +1,13 @@
 
 var catDefs = {
-	angle: 0,
+	angle: 0, // 0
 	density: 2,
 	friction: 1,
 	restitution: 0.3,
 	width: 50,
 	height: 30,
 	maxAmount: 12, // 12
-	minAmount: 1, // 3
+	minAmount: 3, // 3
 	spawnDistance: 70,
 	maxSpawnY: 200,
   timeLeft: 1000,
@@ -19,9 +19,15 @@ var catDefs = {
     starving: 0,
     dead: -1000000
   },
+	rotationMultiplier: {
+		straightenStrong: 0.00025,
+		straightenMild: 0.00005,
+		over90Degrees: 0.000125,
+		velocityReducer: 0.005
+	},
   removeAt: -500,
 	jumpingPower: 60,
-	canDie: true
+	canDie: true // true
 };
 
 
@@ -206,19 +212,25 @@ var catAI = {
 	
 	rotate: function(cat) {
 		var angle = toDegrees(cat.GetAngle()) % 360;
+		var change = 0;
 		
 		if (angle < -180)
 			angle += 360;
 		else if (angle > 180)
 			angle -360;
 		
-		var multiplier = 0.0001;
-		
 		if ((cat.m_angularVelocity < 0 && angle < 0) ||
 				(cat.m_angularVelocity > 0 && angle > 0)) {
-			multiplier = 0.001;
+			change -= angle * catDefs.rotationMultiplier.straightenStrong;
+		} else {
+			change -= angle * catDefs.rotationMultiplier.straightenMild;
 		}
 		
-		cat.m_angularVelocity -= angle * multiplier;
+		if (angle < -90 || angle > 90)
+			change -= angle * catDefs.rotationMultiplier.over90Degrees;
+		
+		change -= cat.m_angularVelocity * catDefs.rotationMultiplier.velocityReducer;
+		
+		cat.m_angularVelocity += change;
 	}
 };
