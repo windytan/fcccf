@@ -141,7 +141,15 @@ function startMusic() {
   music.play();
 }
 
+function playSoundEffect(name) {
+	var snd = new Audio(name);
+	snd.play();
+}
 
+function soundEffectVariator(maxIndex)
+{
+	return Math.floor(Math.random()*3+1);
+}
 window.requestAnimFrame = (function(){
   return window.requestAnimationFrame		  ||
 		  window.webkitRequestAnimationFrame  ||

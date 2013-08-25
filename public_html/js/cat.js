@@ -168,6 +168,7 @@ var catAI = {
 						var force = new Box2D.Common.Math.b2Vec2(Math.cos(angle) * catDefs.jumpingPower, 
 																							Math.sin(angle) * catDefs.jumpingPower);
 						this.cats[j].ApplyImpulse(force, this.cats[j].GetPosition());
+						playSoundEffect('snd/bounce'+soundEffectVariator(3)+'.ogg');
 					}
 				}
 			}
@@ -183,7 +184,6 @@ var catAI = {
 		if (0<this.zeFood.length) {
             for(i = 0; i < this.zeFood.length; i++)
 		    {
-				console.log(foodState(this.zeFood[i]));
 				if (foodState(this.zeFood[i]) !== "rotten") {
 					d = this.distance(this.cats[index].GetPosition(), this.zeFood[i].GetPosition());
 					if(d<shortestD)
