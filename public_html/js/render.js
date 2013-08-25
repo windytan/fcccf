@@ -1,3 +1,5 @@
+var textureOverBody = 5;
+
 
 var imageDefs = {
   cat: {
@@ -36,10 +38,11 @@ function drawCat (cat) {
   transformWorld(cat);
   var w = catDefs.width;
   var h = catDefs.height;
+	var o = textureOverBody;
   // ctx.translate(-w/2, -h/2);
   // ctx.fillRect(0, 0, w, h);
   var img = game.images.cat.normal;
-  ctx.drawImage(img, -w / 2, -h / 2, w, h);
+  ctx.drawImage(img, -w/2-o, -h/2-o, w+o*2, h+o*2);
   ctx.restore();
 }
 
