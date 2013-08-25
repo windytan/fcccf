@@ -128,8 +128,12 @@ var levelLayer = {
     // Decrement all cats' time left
     for (i = 0; i < this.cats.length; ++i) {
       cat = this.cats[i];
-      cat.timeLeft -= 1;
-      if (cat.timeLeft <= 0 && catDefs.canDie) {
+
+      if (cat.timeLeft > 0) {
+        cat.timeLeft -= 1;
+      }
+
+      if (cat.timeLeft === 0 && catDefs.canDie) {
         console.log("A cat just died!");
         world.DestroyBody(cat);
         this.cats.splice(i, 1);
