@@ -20,7 +20,9 @@ var imageDefs = {
     rotten: "fish_rotten.png"
   },
   background: {
-	menu: "titleScreen.jpg"
+	menu: "titleScreen.jpg",
+	ingame: "background.png",
+	foreground: "foreground.png"
   }
 };
 
