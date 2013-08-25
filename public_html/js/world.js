@@ -165,7 +165,7 @@ function pxToM (vector) {
 
 
 function mToPx (vector) {
-  return { x: vector.y * scale, y: vector.y * scale };
+  return { x: vector.x * scale, y: vector.y * scale };
 }
 
 
