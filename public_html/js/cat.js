@@ -7,17 +7,18 @@ var catDefs = {
 	width: 50,
 	height: 30,
 	maxAmount: 12,
-	minAmount: 3,
+	minAmount: 1,
 	spawnDistance: 70,
 	maxSpawnY: 200,
   timeLeft: 1000,
-	bottomRestitution: 1.2,
   // States and their lower thresholds (where 1 is healthy and 0 is dead)
   states: {
     normal: 0.75,
     hungry: 0.5,
     starving: -1
-  }
+  },
+	bottomRestitution: 0.5,
+	jumpingPower: 60
 };
 
 
@@ -106,19 +107,36 @@ function generateCats() {
 
 
 var catAI = {
-	catzes: [],
+	cats: [],
 	zeFood: [],
-	jumpingPower: 30,
+	actionCap: 0.1,
 	
 	init: function(catz) {
-		this.catzes = catz;
+		this.cats = catz;
 	},
 	
-	logic: function() {
-		if (0 < this.catzes.length) {
-			if (this.catzes[0].GetLinearVelocity().Length() === 0) {
-				var force = new Box2D.Common.Math.b2Vec2(15, 0 - this.jumpingPower);
-				this.catzes[0].ApplyImpulse(force, this.catzes[0].GetPosition());
+	updateFood: function(foodz)
+	{
+	    this.zeFood = foodz;
+	},
+	
+    logic: function() {
+	    var position;
+		var angle = 0;
+		var j = 0;
+	    if(0<this.cats.length) {
+		    for(j = 0; j < this.cats.length; j++) {
+				if(this.cats[j].GetLinearVelocity().Length()<this.actionCap)
+				{
+					position = this.nearestFood(j);
+					if(position!==0)
+					{
+						angle = this.angleInRadians(this.cats[j].GetPosition(), position);
+						var force = new Box2D.Common.Math.b2Vec2(Math.cos(angle) * catDefs.jumpingPower, 
+																							Math.sin(angle) * catDefs.jumpingPower);
+						this.cats[j].ApplyImpulse(force, this.cats[j].GetPosition());
+					}
+				}
 			}
 		}
 	},
@@ -127,13 +145,29 @@ var catAI = {
 		var i = 0;
 		var shortestD = Number.MAX_VALUE;
 		var d = 0;
-		for (i = 0; i < zeFood.length; i++) {
-			d = this.distance(catzes[index].GetPosition(), zeFood[i].GetPosition());
+		var foodToReturn = 0;
+		
+		if(0<this.zeFood.length) {
+            for(i =0; i < this.zeFood.length; i++)
+		    {
+                d = this.distance(this.cats[index].GetPosition(), this.zeFood[i].GetPosition());
+				if(d<shortestD)
+				{
+				    shortestD = d;
+					foodToReturn = i;
+				}
+		    }
+			return this.zeFood[foodToReturn].GetPosition();
 		}
+		return 0;
+	},
+	
+	
+	angleInRadians: function(position1, position2) {
+	    return Math.atan2(position2.y-position1.y, position2.x-position1.x) ;
 	},
 	
 	distance: function(position1, position2) {
-		console.log(position1.x);
-		return  Math.sqrt(Math.pow((position1.x - position2.x), 2) + Math.pow((position1.y - position2.y), 2));
+		return  Math.sqrt(Math.pow((position1.x-position2.x), 2) + Math.pow((position1.y-position2.y), 2));
 	}
 };
