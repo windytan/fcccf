@@ -180,11 +180,11 @@ var catAI = {
 		var d = 0;
 		var foodToReturn = 0;
 		
-		if(0<this.zeFood.length) {
-            for(i =0; i < this.zeFood.length; i++)
+		if (0<this.zeFood.length) {
+            for(i = 0; i < this.zeFood.length; i++)
 		    {
 				console.log(foodState(this.zeFood[i]));
-				if(foodState(this.zeFood[i])!="rotten") {
+				if (foodState(this.zeFood[i]) !== "rotten") {
 					d = this.distance(this.cats[index].GetPosition(), this.zeFood[i].GetPosition());
 					if(d<shortestD)
 					{
@@ -193,7 +193,7 @@ var catAI = {
 					}
 				}
 		    }
-			if(shortestD != Number.MAX_VALUE)
+			if (shortestD !== Number.MAX_VALUE)
 			{
 				return this.zeFood[foodToReturn].GetPosition();
 			}
@@ -203,7 +203,7 @@ var catAI = {
 	
 	
 	angleInRadians: function(position1, position2) {
-	    return Math.atan2(position2.y-position1.y, position2.x-position1.x) ;
+	  return Math.atan2(position2.y-position1.y, position2.x-position1.x) ;
 	},
 	
 	distance: function(position1, position2) {
