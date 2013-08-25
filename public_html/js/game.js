@@ -16,6 +16,8 @@ $(document).ready(function() {
   canvas.addMouseEventListener("mousemove", game.onMouseMove, false);
 
   loadResourcesAndRunInit(game);
+
+  startMusic();
 });
 
 
@@ -133,6 +135,12 @@ var game = {
 		requestAnimFrame(game.step);
 	},
 };
+
+function startMusic() {
+  var music = new Audio('snd/kokomjau.wav');
+  music.loop = true;
+  music.play();
+}
 
 
 window.requestAnimFrame = (function(){
