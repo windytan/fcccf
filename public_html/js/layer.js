@@ -98,7 +98,7 @@ var levelLayer = {
 	logic: function() {
     var i;
     var cat;
-	catAI.logic();
+	  catAI.logic();
 	
 		if (this.itemInHand !== null) {
       this.itemInHand.SetPosition(pxToM(game.cursor));
@@ -171,6 +171,19 @@ var levelLayer = {
 		if (debug) {
 			world.DrawDebugData();
     }
+    $.each(this.cats, function (i, cat) {
+      // ctx.fillRect(0, 0, cat.width * scale, cat.height * scale);
+      ctx.save();
+      ctx.fillStyle = "red";
+      var pos = mToPx(cat.GetPosition());
+      ctx.translate(pos.x, pos.y);
+      ctx.rotate(cat.GetAngle());
+      var w = catDefs.width;
+      var h = catDefs.height;
+      ctx.translate(-w/2, -h/2);
+      ctx.fillRect(0, 0, w, h);
+      ctx.restore();
+    });
 	},
 
   spawnItem: function () {
