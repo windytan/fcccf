@@ -7,14 +7,6 @@ var ctx;
 $(document).ready(function() {
   var canvas = $("canvas")[0];
 	ctx = canvas.getContext("2d");
-  // Use this to add a callback function that takes current mouse position
-  // as an additional parameter. Only makes sense for mouse events (i.e. click)
-  canvas.addMouseEventListener = function (type, callback, useCapture) {
-    canvas.addEventListener(type, withMouse(callback), useCapture);
-  };
-  canvas.addMouseEventListener("click", game.onClick, false);
-  canvas.addMouseEventListener("mousemove", game.onMouseMove, false);
-
   loadResourcesAndRunInit(game);
 });
 
@@ -91,6 +83,14 @@ var game = {
 			this.currentLayer().init();
 		}
 		
+    // Use this to add a callback function that takes current mouse position
+    // as an additional parameter. Only makes sense for mouse events (i.e. click)
+    ctx.canvas.addMouseEventListener = function (type, callback, useCapture) {
+      ctx.canvas.addEventListener(type, withMouse(callback), useCapture);
+    };
+    ctx.canvas.addMouseEventListener("click", game.onClick, false);
+    ctx.canvas.addMouseEventListener("mousemove", game.onMouseMove, false);
+
     ctx.canvas.style.cursor = "none";
 		game.step();
 	},
