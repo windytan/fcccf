@@ -80,6 +80,7 @@ var levelLayer = {
 	levelNumber: 0,
 	
   cats: [],
+  deadCats: [],
   eatings: [], // List of eatings that happened this step
                // Eatings are objects of form {cat, food}
   
@@ -125,22 +126,31 @@ var levelLayer = {
     }
     this.eatings.length = 0; // clear list of eatings
 
-    // Decrement all cats' time left
+    // Decrement living cats' time left
     for (i = 0; i < this.cats.length; ++i) {
       cat = this.cats[i];
 
-      if (cat.timeLeft > 0) {
-        cat.timeLeft -= 1;
-      }
-
-      if (cat.timeLeft === 0 && catDefs.canDie) {
+      cat.timeLeft -= 1;
+      if (cat.timeLeft <= 0 && catDefs.canDie) {
         console.log("A cat just died!");
-        world.DestroyBody(cat);
+        cat.timeLeft -= 1;
         this.cats.splice(i, 1);
-        i -= 1;
+        this.deadCats.push(cat);
         if (this.cats.length === 0) {
           console.log("All cats are dead!");
         }
+        i -= 1;
+      }
+    }
+
+    // Handle dead cats
+    for (i = 0; i < this.deadCats.length; ++i) {
+      cat = this.deadCats[i];
+      cat.timeLeft -= 1;
+      if (cat.timeLeft <= catDefs.removeAt) {
+        world.DestroyBody(cat);
+        this.deadCats.splice(i, 1);
+        i -= 1;
       }
     }
 
@@ -181,14 +191,17 @@ var levelLayer = {
 
 	render: function() {
 		clearScreen();
-		
+			
 		if (debug) {
 			world.DrawDebugData();
     }
 		
+	  drawBackground("ingame");
+    this.deadCats.forEach(drawCat);
     this.cats.forEach(drawCat);
     this.items.forEach(drawItem);
     drawItem(this.itemInHand);
+	drawBackground("foreground");
 	},
 
   spawnItem: function () {
