@@ -17,6 +17,9 @@ var imageDefs = {
   fish: {
     normal: "fish.png",
     rotten: "fish_rotten.png"
+  },
+  background: {
+	menu: "titleScreen.jpg"
   }
 };
 
@@ -81,4 +84,10 @@ function drawItem (item) {
   ctx.restore();
 }
 
-
+function drawBackground(gameState) 
+{
+	ctx.save();
+	var img = game.images.background[gameState];
+	ctx.drawImage(img, 0, 0);
+	ctx.restore();
+}
