@@ -247,6 +247,7 @@ var levelLayer = {
       if (this.items[i] === item) {
         this.items.splice(i, 1);
 		catAI.updateFood(this.items);
+		playSoundEffect('snd/omnom'+soundEffectVariator(2)+'.ogg');
         return true;
       }
     }
