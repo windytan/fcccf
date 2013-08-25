@@ -8,6 +8,8 @@ $(document).ready(function() {
   var canvas = $("canvas")[0];
 	ctx = canvas.getContext("2d");
   loadResourcesAndRunInit(game);
+
+  startMusic();
 });
 
 
@@ -132,6 +134,12 @@ var game = {
 		requestAnimFrame(game.step);
 	},
 };
+
+function startMusic() {
+  var music = new Audio('snd/kokomjau.wav');
+  music.loop = true;
+  music.play();
+}
 
 
 window.requestAnimFrame = (function(){

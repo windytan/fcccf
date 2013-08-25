@@ -64,30 +64,6 @@ function createLevelFrames() {
 }
 
 
-function createFood(position) {
-  var newFood = createBody({
-    dynamic: true,
-    x: position.x,
-    y: position.y,
-    angle: Math.floor(Math.random()*360),
-    density: 1.0,
-    friction: 0.8,
-    restitution: 0.3,
-    shape: global.shape.circular,
-    diameter: Math.floor(10 + Math.random()*5),
-  });
-  newFood.entityType = "food";
-  return newFood;
-}
-
-
-
-
-
-
-
-
-
 function createPropeller(def) {
 	defaults.propeller(def);
 	
