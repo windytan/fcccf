@@ -38,6 +38,11 @@ function catState(cat) {
 }
 
 
+function catCanEat (cat) {
+  return cat.timeLeft > 0;
+}
+
+
 function createCat(position) {
 	var cat = createBody({
 		dynamic: true,

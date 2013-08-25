@@ -169,10 +169,16 @@ var levelLayer = {
 
   onContact: function (a, b) {
     if (a.entityType === "cat" && b.entityType === "food") {
-      this.eatings.push({cat: a, food: b});
+      this.onContactCatFood(a, b);
     }
     else if (b.entityType === "cat" && a.entityType === "food") {
-      this.eatings.push({cat: b, food: a});
+      this.onContactCatFood(b, a);
+    }
+  },
+
+  onContactCatFood: function (cat, food) {
+    if (catCanEat(cat)) {
+      this.eatings.push({cat: cat, food: food});
     }
   },
 
