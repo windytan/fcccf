@@ -10,11 +10,13 @@ var imageDefs = {
   },
 
   cheezburger: {
-    normal: "cheezburger.png"
+    normal: "cheezburger.png",
+    rotten: "cheezburger_rotten.png"
   },
 
   fish: {
-    normal: "fish.png"
+    normal: "fish.png",
+    rotten: "fish_rotten.png"
   }
 };
 
@@ -61,9 +63,10 @@ function drawItem (item) {
   transformWorld(item);
   if (item.entityType === "food") {
     var type = item.foodType;
+    var state = foodState(item);
     var w = foodDefs.types[type].width;
     var h = foodDefs.types[type].height;
-    var img = game.images[type].normal;
+    var img = game.images[type][state];
     ctx.drawImage(img, -w/2, -h/2, w, h);
   }
   else {

@@ -4,6 +4,8 @@ var foodDefs = {
   density: 1.0,
   friction: 0.8,
   restitution: 0.3,
+  timeLeft: 500,
+  states: ["normal", "rotten"],
   types: {
     fish: {
       width: 60,
@@ -35,7 +37,13 @@ function createFood(position) {
   });
   newFood.entityType = "food";
   newFood.foodType = type;
+  newFood.timeLeft = foodDefs.timeLeft;
   return newFood;
+}
+
+
+function foodState (food) {
+  return foodDefs.states[food.timeLeft > 0 ? 0 : 1];
 }
 
 
