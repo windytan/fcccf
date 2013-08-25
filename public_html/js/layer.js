@@ -1,6 +1,10 @@
-var buttonType = {
-	circle: 0,
-	rectangular: 1
+var button = {
+	type: {
+		circle: 0,
+		rectangular: 1
+	},
+	
+	drawLines: true
 };
 
 var menuLayer = {
@@ -9,7 +13,7 @@ var menuLayer = {
 	init: function() {
 		
 		this.buttons.push(createButton({
-			type: buttonType.circle,
+			type: button.type.circle,
 			x: 340,
 			y: 522,
 			radius: 65,
@@ -20,7 +24,7 @@ var menuLayer = {
 		}));
 
 		this.buttons.push(createButton({
-			type: buttonType.rectangular,
+			type: button.type.rectangular,
 			x: 590,
 			y: 580,
 			width: 200,
@@ -43,9 +47,6 @@ var menuLayer = {
 		$.each(this.buttons, function(i, button) {
 			button.render();
 		});
-
-		ctx.fillStyle = "#ffc0cb";
-		ctx.fillRect(game.cursor.x - 5, game.cursor.y - 5, 10, 10);
 	},
 	
 	onClick: function(event, cursor) {
@@ -58,7 +59,7 @@ var menuLayer = {
 
 
 function createButton(def) {
-	if (def.type === buttonType.circle) {
+	if (def.type === button.type.circle) {
 		return {
 			x: def.x,
 			y: def.y,
@@ -70,11 +71,14 @@ function createButton(def) {
 				return distance < this.radius;
 			},
 			render: function() {
-				//ctx.arc(this.x, this.y, this.radius, 0, 2*Math.PI);
-				//ctx.stroke();
+				if (button.drawLines) {
+					ctx.beginPath();
+					ctx.arc(this.x, this.y, this.radius, 0, 2*Math.PI);
+					ctx.stroke();
+				}
 			}
 		};
-	} else if (def.type === buttonType.rectangular) {
+	} else if (def.type === button.type.rectangular) {
 		return {
 			x: def.x,
 			y: def.y,
@@ -87,7 +91,8 @@ function createButton(def) {
 							 y > this.y && y < this.y + this.height;
 			},
 			render: function() {
-				ctx.fillRect(this.x, this.y, this.width, this.height);
+				if (button.drawLines)
+					ctx.strokeRect(this.x, this.y, this.width, this.height);
 			}
 		};
 	}

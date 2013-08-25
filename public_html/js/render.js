@@ -115,10 +115,20 @@ function drawItem (item) {
   ctx.restore();
 }
 
-function drawBackground(gameState) 
-{
+function drawBackground(gameState) {
 	ctx.save();
 	var img = game.images.background[gameState];
 	ctx.drawImage(img, 0, 0);
 	ctx.restore();
+}
+
+
+
+function drawCursor() {
+	ctx.beginPath();
+	ctx.strokeStyle = "#000000";
+	ctx.arc(game.cursor.x, game.cursor.y, 7, 0, 2*Math.PI);
+	ctx.stroke();
+	ctx.fillStyle = "#ffc0cb";
+	ctx.fill();
 }

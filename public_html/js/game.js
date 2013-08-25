@@ -103,6 +103,8 @@ var game = {
 
 	render: function() {
 		this.currentLayer().render();
+		
+		drawCursor();
 	},
 
   onClick: function (event, cursor) {
