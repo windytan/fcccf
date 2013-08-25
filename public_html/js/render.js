@@ -3,6 +3,10 @@ var itemTextureOverBody = 2;
 
 
 var imageDefs = {
+  hand: {
+    normal: "player.png"
+  },
+
   cat: {
     normal: "cat_normal_texture.png",
     hungry: "cat_hungry_texture.png",

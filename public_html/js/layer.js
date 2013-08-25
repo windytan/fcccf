@@ -213,6 +213,13 @@ var levelLayer = {
     this.props.forEach(drawProp);
     this.deadCats.forEach(drawCat);
     this.cats.forEach(drawCat);
+    ctx.save();
+    var img = game.images.hand.normal;
+    var w = img.width;
+    var h = img.height;
+    ctx.translate(game.cursor.x, game.cursor.y);
+    ctx.drawImage(img, -w/2, -h/2 - 20, w, h);
+    ctx.restore();
     this.items.forEach(drawItem);
     if(this.itemInHand!==null) {
       drawItem(this.itemInHand);
