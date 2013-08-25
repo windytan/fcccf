@@ -3,7 +3,9 @@ var textureOverBody = 5;
 
 var imageDefs = {
   cat: {
-    normal: "cat_normal_texture.png"
+    normal: "cat_normal_texture.png",
+    hungry: "cat_hungry_texture.png",
+    starving: "cat_starving_texture.png"
   }
 };
 
@@ -41,7 +43,8 @@ function drawCat (cat) {
 	var o = textureOverBody;
   // ctx.translate(-w/2, -h/2);
   // ctx.fillRect(0, 0, w, h);
-  var img = game.images.cat.normal;
+  var state = catState(cat);
+  var img = game.images.cat[state];
   ctx.drawImage(img, -w/2-o, -h/2-o, w+o*2, h+o*2);
   ctx.restore();
 }
