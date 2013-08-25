@@ -85,6 +85,9 @@ function createFood(position) {
 
 
 
+
+
+
 function createPropeller(def) {
 	defaults.propeller(def);
 	
