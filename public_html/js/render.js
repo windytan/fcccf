@@ -53,6 +53,9 @@ function drawCat (cat) {
 	var o = textureOverBody;
   var state = catState(cat);
   var img = game.images.cat[state];
+  var c = cat.catColor;
+  ctx.fillStyle = "rgb(" + c.r + "," + c.g + "," + c.b + ")";
+  ctx.fillRect(-w/2, -h/2, w, h);
   ctx.drawImage(img, -w/2-o, -h/2-o, w+o*2, h+o*2);
   ctx.restore();
 }
