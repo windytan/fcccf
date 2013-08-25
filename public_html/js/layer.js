@@ -79,6 +79,7 @@ var levelLayer = {
 	items: [],
 	levelNumber: 0,
 	
+  props: [],
   cats: [],
   deadCats: [],
   eatings: [], // List of eatings that happened this step
@@ -203,11 +204,12 @@ var levelLayer = {
     }
 		
 	  drawBackground("ingame");
+    this.props.forEach(drawProp);
     this.deadCats.forEach(drawCat);
     this.cats.forEach(drawCat);
     this.items.forEach(drawItem);
     drawItem(this.itemInHand);
-	drawBackground("foreground");
+	  drawBackground("foreground");
 	},
 
   spawnItem: function () {

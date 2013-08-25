@@ -20,9 +20,12 @@ var imageDefs = {
     rotten: "fish_rotten.png"
   },
   background: {
-	menu: "titleScreen.jpg",
-	ingame: "background.png",
-	foreground: "foreground.png"
+    menu: "titleScreen.jpg",
+    ingame: "background.png",
+    foreground: "foreground.png"
+  },
+  props: {
+    propeller: "woodplank.png"
   }
 };
 
@@ -48,6 +51,26 @@ function transformWorld (thingy) {
   var pos = mToPx(thingy.GetPosition());
   ctx.translate(pos.x, pos.y);
   ctx.rotate(thingy.GetAngle());
+}
+
+
+function drawProp (prop) {
+  if (prop.propType === "propeller") {
+    ctx.save();
+    transformWorld(prop);
+    // console.log(mToPx(prop.GetPosition()));
+    var type = prop.propType;
+    var img = game.images.props[type];
+    var def = {};
+    defaults.propeller(def);
+    var w = def.width;
+    var h = def.height;
+    ctx.drawImage(img, -w/2, -h/2, w, h);
+    ctx.restore();
+  }
+  else {
+    console.log("Unknown prop type:", prop.propType);
+  }
 }
 
 
