@@ -78,6 +78,7 @@ var levelLayer = {
 	itemInHand: null,
 	items: [],
 	levelNumber: 0,
+	dropRate: 0,
 	
   props: [],
   cats: [],
@@ -99,17 +100,19 @@ var levelLayer = {
 	logic: function() {
     var i;
     var cat;
-		
-		catAI.logic();
-	
-		if (this.itemInHand !== null) {
+	if(this.dropRate === 0 && this.itemInHand === null)
+	{
+			this.spawnItem();
+	}
+	catAI.logic();
+	if (this.itemInHand !== null) {
       this.itemInHand.SetPosition(pxToM(game.cursor));
     }
-    if (this.clicked) {
-      this.clicked = false;
+    if (this.clicked && this.dropRate === 0) {
+	  this.dropRate = 100; 
       this.dropItem();
-    }
-
+    } 
+	this.clicked = false;
 		world.Step(gameWorld.timeStep, gameWorld.velocityIterations, gameWorld.positionIterations);
 		world.ClearForces();
 
@@ -125,6 +128,9 @@ var levelLayer = {
         // console.log("Cat", cat, "eats", food);
       }
     }
+	if(this.dropRate>0) {
+		this.dropRate -=1;
+	}
     this.eatings.length = 0; // clear list of eatings
 
     // Decrement living cats' time left
@@ -208,7 +214,9 @@ var levelLayer = {
     this.deadCats.forEach(drawCat);
     this.cats.forEach(drawCat);
     this.items.forEach(drawItem);
-    drawItem(this.itemInHand);
+    if(this.itemInHand!==null) {
+      drawItem(this.itemInHand);
+    }
 	  drawBackground("foreground");
 	},
 
@@ -222,7 +230,7 @@ var levelLayer = {
     this.items.push(droppedItem);
 	catAI.updateFood(this.items);
     droppedItem.SetActive(true);
-    this.spawnItem();
+	this.itemInHand = null;
   },
 
   // Remove item, return whether item was in list
