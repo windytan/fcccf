@@ -150,7 +150,7 @@ function playSoundEffect(name) {
 
 function soundEffectVariator(maxIndex)
 {
-	return Math.floor(Math.random()*3+1);
+	return Math.floor(Math.random()*maxIndex+1);
 }
 window.requestAnimFrame = (function(){
   return window.requestAnimationFrame		  ||
