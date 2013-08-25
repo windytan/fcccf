@@ -185,6 +185,7 @@ var levelLayer = {
   dropItem: function () {
     var droppedItem = this.itemInHand;
     this.items.push(droppedItem);
+	catAI.updateFood(this.items);
     droppedItem.SetActive(true);
     this.spawnItem();
   },
@@ -195,6 +196,7 @@ var levelLayer = {
     for (i = 0; i < this.items.length; ++i) {
       if (this.items[i] === item) {
         this.items.splice(i, 1);
+		catAI.updateFood(this.items);
         return true;
       }
     }
