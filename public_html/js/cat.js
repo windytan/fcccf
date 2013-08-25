@@ -1,18 +1,39 @@
+
 var catDefs = {
 	angle: 0,
 	density: 2,
 	friction: 1,
-	restitution: 0.5,
+	restitution: 0.3,
 	width: 50,
 	height: 30,
-	maxAmount: 12,
-	minAmount: 1,
+	maxAmount: 12, // 12
+	minAmount: 1, // 3
 	spawnDistance: 70,
 	maxSpawnY: 200,
   timeLeft: 1000,
-	bottomRestitution: 0.5,
-	jumpingPower: 60
+	bottomRestitution: 1.1,
+  // States and their lower thresholds (where 1 is healthy and 0 is dead)
+  states: {
+    normal: 0.75,
+    hungry: 0.5,
+    starving: -1
+  },
+	jumpingPower: 60,
+	canDie: true
 };
+
+
+function catState(cat) {
+  var x = cat.timeLeft / catDefs.timeLeft;
+  var state;
+  for (state in catDefs.states) {
+    var lowerThreshold = catDefs.states[state];
+    if (x >= lowerThreshold) {
+      return state;
+    }
+  }
+  console.log("Error: No cat state matches timeLeft = ", cat.timeLeft);
+}
 
 
 function createCat(position) {
@@ -70,7 +91,7 @@ function generateCats() {
 	var spawnSpot;
   var cats = [];
   var i = 0;
-	for (i = 0; i < numCats; i++)
+	for (i = 0; i < numCats-1; i++)
 	{
 		spawnSpot = {x: Math.random()*(ctx.canvas.width-catDefs.width/2), y: ctx.canvas.height-catDefs.height/2- Math.random()*catDefs.maxSpawnY};
 		while(!validSpawnSpot(spawnSpot, catLocations))
@@ -102,15 +123,15 @@ var catAI = {
 	
     logic: function() {
 	    var position;
-		var angle = 0;
-		var j = 0;
+			var angle = 0;
+			var j = 0;
 	    if(0<this.cats.length) {
 		    for(j = 0; j < this.cats.length; j++) {
-				if(this.cats[j].GetLinearVelocity().Length()<this.actionCap)
-				{
+				this.rotate(this.cats[j]);
+				
+				if(this.cats[j].GetLinearVelocity().Length()<this.actionCap) {
 					position = this.nearestFood(j);
-					if(position!==0)
-					{
+					if(position!==0) {
 						angle = this.angleInRadians(this.cats[j].GetPosition(), position);
 						var force = new Box2D.Common.Math.b2Vec2(Math.cos(angle) * catDefs.jumpingPower, 
 																							Math.sin(angle) * catDefs.jumpingPower);
@@ -149,5 +170,23 @@ var catAI = {
 	
 	distance: function(position1, position2) {
 		return  Math.sqrt(Math.pow((position1.x-position2.x), 2) + Math.pow((position1.y-position2.y), 2));
+	},
+	
+	rotate: function(cat) {
+		var angle = toDegrees(cat.GetAngle()) % 360;
+		
+		if (angle < -180)
+			angle += 360;
+		else if (angle > 180)
+			angle -360;
+		
+		var multiplier = 0.0001;
+		
+		if ((cat.m_angularVelocity < 0 && angle < 0) ||
+				(cat.m_angularVelocity > 0 && angle > 0)) {
+			multiplier = 0.001;
+		}
+		
+		cat.m_angularVelocity -= angle * multiplier;
 	}
 };
