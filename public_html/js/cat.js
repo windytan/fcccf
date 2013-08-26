@@ -172,21 +172,37 @@ var catAI = {
         // }
       // }
     // }
-    this.cats.forEach(function (cat) {
+    var ai = this;
+    $.each(this.cats, function (i, cat) {
       var pos = cat.GetPosition();
+      var hungriness = 1 - Math.max(cat.timeLeft, 0) / catDefs.timeLeft;
+      // Change of jumping grows with hungriness
+      if (Math.random() < 0.1 * (hungriness - 0.5)) {
+        var target = ai.nearestFood(i);
+        if (target !== 0) {
+          var rad = ai.angleInRadians(pos, target);
+          ai.jump(cat, rad);
+        }
+      }
       var pixPos = mToPx(pos);
       var isNearGround = pixPos.y > ctx.canvas.height * 0.95;
       var v = cat.GetLinearVelocity().Length();
       var isSlow = v < 5.0;
       if (isNearGround && isSlow) {
-        var rad = Math.random() * Math.PI; // 180 degrees
-        var power = catDefs.jumpingPower;
-        var push = new Box2D.Common.Math.b2Vec2(Math.cos(rad) * power,
-                                                -Math.sin(rad) * power);
-        cat.ApplyImpulse(push, pos);
+        var rad = Math.PI + Math.random() * Math.PI; // 180 degrees
+        ai.jump(cat, rad);
       }
     });
 	},
+
+  jump: function (cat, rad) {
+    var pos = cat.GetPosition();
+    var power = catDefs.jumpingPower;
+    var push = new Box2D.Common.Math.b2Vec2(Math.cos(rad) * power,
+                                            Math.sin(rad) * power);
+    cat.ApplyImpulse(push, pos);
+    playSoundEffect('snd/bounce'+soundEffectVariator(3)+'.ogg');
+  },
 	
 	nearestFood: function(index) {
 		var i = 0;
