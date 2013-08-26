@@ -61,7 +61,7 @@ var levelInfo = [
 	},
 	{
 		cats: 3,
-		scoreGoal: 50,
+		scoreGoal: 60,
 		propellers: halfCirclePropels()
 	},
 	{
