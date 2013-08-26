@@ -90,11 +90,11 @@ function SelectionLayer() {
 		}
 	});
 	
-	var radius = 50;
-	var gap = 80;
+	var radius = 40;
+	var gap = 50;
 	var amount = amountOfLevels();
-	var x = (ctx.canvas.width / 2) - (amount-1) * (radius+gap) / 2;
-	var y = 470;
+	var x = (ctx.canvas.width / 2) - (amount-1) * (radius+gap) / 2 + 10;
+	var y = 490;
 	
 	for (var i = 0; i < amount; ++i) {
 		this.buttons.push(createButton({
@@ -107,7 +107,8 @@ function SelectionLayer() {
 				game.layer.push(createLevel(levelNumber));
 			}
 		}));
-		x += radius + gap;
+		x += radius + gap - i;
+		y -= 1.5 * i * x * 0.005;
 	}
 	
 	this.logic = function() {
@@ -218,9 +219,11 @@ function LevelLayer(info) {
 					cat.m_angularVelocity = 70;
 			});
 		},
-		function(levelLayer) {		// 2-3 cats drop from heaven
+		function(levelLayer) {		// 2-3 (or 20) cats drop from heaven
 			var moarCats = 2;
-			if (Math.random() < 0.3)
+			if (Math.random() < 0.01)
+				moarCats = 30;
+			else if (Math.random() < 0.1)
 				moarCats = 3;
 			
 			for (var i = 0; i < moarCats; ++i) {
@@ -229,7 +232,7 @@ function LevelLayer(info) {
 				levelLayer.cats.push(cat);
 			}
 		},
-		function(levelLayer) {
+		function(levelLayer) {		// Create random propeller
 			var propellerDef = {
 				x: Math.random()*600+100,
 				y: Math.random()*435+60,
@@ -238,7 +241,7 @@ function LevelLayer(info) {
 			levelLayer.props.push(createPropeller(propellerDef));
 		},
 		
-		function(levelLayer) {
+		function(levelLayer) {		// Side gravity
 			var multiplier = Math.random() + 2;
 			
 			if (Math.random() < 0.5)
@@ -260,9 +263,10 @@ function LevelLayer(info) {
 		var cat;
 		
 		this.moveHand();
-
-		if (!this.gameLost)
+		
+		if (!this.gameLost) {
 			this.eventTimer -= 1; // TÄMÄ KUULUU OLLA 1 ----------------------
+		}
 		
     if (this.eventTimer <= 0 && this.events.length > 0) {
 			if (this.goingEventCallBack !== null) {
@@ -527,7 +531,6 @@ function createContactListener(self) {
 		};
 		return listener;
 	};
-
 
 
 
