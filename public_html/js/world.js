@@ -69,6 +69,14 @@ var defaults = {
 		if (def.height === undefined) def.height = 10;
 		if (def.speed === undefined) def.speed = 360;
 		if (def.torque === undefined) def.torque = 100000;
+	},
+	
+	catGeneration: function(info) {
+		if (info.cats === undefined) info.cats = 4;
+		if (info.xMin === undefined) info.xMin = 50;
+		if (info.xMax === undefined) info.xMax = 750;
+		if (info.yMin === undefined) info.yMin = 320;
+		if (info.yMax === undefined) info.yMax = 540;
 	}
 };
 

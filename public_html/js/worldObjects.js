@@ -94,7 +94,7 @@ function createPropeller(def) {
 	});
 
   propeller.propType = "propeller";
-
+	propeller.SetUserData(def);
   return propeller;
 }
 

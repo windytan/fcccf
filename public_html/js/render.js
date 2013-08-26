@@ -66,7 +66,7 @@ function drawProp (prop) {
     // console.log(mToPx(prop.GetPosition()));
     var type = prop.propType;
     var img = game.images.props[type];
-    var def = {};
+    var def = prop.m_userData;
     defaults.propeller(def);
     var w = def.width;
     var h = def.height;

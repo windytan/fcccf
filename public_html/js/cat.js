@@ -103,13 +103,9 @@ function randomColor () {
 
 
 function validSpawnSpot(position, catPosiArray) {
-	var distance = 0;
-  var i;
-	for(i = 0; i < catPosiArray.length; i++)
-	{
-		distance = Math.sqrt(Math.pow((catPosiArray[i].x-position.x), 2) + Math.pow((catPosiArray[i].y-position.y), 2));
-		if(distance < catDefs.spawnDistance) 
-		{
+	for (var i = 0; i < catPosiArray.length; i++) {
+		var distance = Math.sqrt(Math.pow((catPosiArray[i].x-position.x), 2) + Math.pow((catPosiArray[i].y-position.y), 2));
+		if (distance < catDefs.spawnDistance) {
 			return false;
 		}
 	}
@@ -117,19 +113,23 @@ function validSpawnSpot(position, catPosiArray) {
 }
 
 
-function generateCats(amount) {
+function generateCats(info) {
 	var catLocations = [];
 	var numCats = catDefs.minAmount + Math.random()*catDefs.maxAmount;
-	var spawnSpot;
   var cats = [];
 	
-	for (var i = 0; i < amount; i++)
-	{
-		spawnSpot = {x: Math.random()*(ctx.canvas.width-catDefs.width/2), y: ctx.canvas.height-catDefs.height/2- Math.random()*catDefs.maxSpawnY};
-		while(!validSpawnSpot(spawnSpot, catLocations))
-		{
-			spawnSpot = {x: Math.random()*(ctx.canvas.width-catDefs.width/2), y: ctx.canvas.height-catDefs.height/2- Math.random()*catDefs.maxSpawnY};
-		}
+	defaults.catGeneration(info);
+	var xMin = info.xMin;
+	var xMax = info.xMax;
+	var yMin = info.yMin;
+	var yMax = info.yMax;
+	
+	for (var i = 0; i < info.cats; i++) {
+		var spawnSpot;
+		do {
+			spawnSpot = {x: Math.random()*(xMax-xMin)+xMin, y: Math.random()*(yMax-yMin)+yMin};
+		} while (!validSpawnSpot(spawnSpot, catLocations));
+		
 		catLocations[i] = spawnSpot;
 		var cat = createCat(catLocations[i]);
     cats.push(cat);
