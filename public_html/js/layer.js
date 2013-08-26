@@ -79,7 +79,7 @@ var selectionLayer = {
 	
 	init: function() {
 		var radius = 50;
-		var gap = 40;
+		var gap = 80;
 		var amount = levelInfo.length;
 		var x = (ctx.canvas.width / 2) - (amount-1) * (radius+gap) / 2;
 		var y = 400;
@@ -89,7 +89,7 @@ var selectionLayer = {
 				type: button.type.circle,
 				x: x,
 				y: y,
-				radius: 30,
+				radius: radius,
 				callback: function(levelNumber) {
 					game.layer.push(createLevel(levelNumber));
 				}
@@ -104,9 +104,28 @@ var selectionLayer = {
 	
 	render: function() {
 		clearScreen();
+//		drawBackground(""); TÄHÄN SELECTION-RUUDUN BACKGROUND
+		
+		var grd = ctx.createLinearGradient(0, 640, 800, 0);
+		var gradientStops = 300;
+		
+		for (var i = 0; i < gradientStops; ++i) {
+			var color = ["#FF0000", "#FF7F00", "#FFFF00", "#00FF00", "#0000FF", "#4B0082", "#8F00FF"];
+			grd.addColorStop(i/gradientStops, color[i % color.length]);
+		}
+		
+		grd.addColorStop(0, "#000000");
+		grd.addColorStop(0.5, "red");
+		grd.addColorStop(1, "#ffffff");
 		
 		$.each(this.buttons, function(i, button) {
 			button.render();
+			ctx.font = "70px Arial";
+			ctx.textAlign = "center";
+			ctx.fillStyle = grd;
+			ctx.fillText(i+1, button.x, button.y+24);
+			ctx.strokeText(i+1, button.x, button.y+24);
+			
 		});
 	},
 	onClick: function(event, cursor) {
@@ -132,7 +151,7 @@ function LevelLayer(levelNumber) {
 	this.levelNumber = 0;
 	this.dropCooldown = 0;
 	this.score = 0;
-	this.scoreGoal = 10;
+	this.scoreGoal = 1;
 	this.props = [];
 	this.cats = [];
 	this.deadCats = [];
@@ -270,7 +289,7 @@ function LevelLayer(levelNumber) {
 		else if (b.entityType === "cat" && a.entityType === "food") {
 			this.onContactCatFood(b, a);
 		}
-	}
+	};
 	
 	this.onContactCatFood = function(cat, food) {
 		if (catCanEat(cat) && food.timeLeft > 0) {
