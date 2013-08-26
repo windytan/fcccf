@@ -25,12 +25,19 @@ var imageDefs = {
   },
   background: {
     menu: "titleScreen.jpg",
+		selection: "level_select.png",
     ingame: "background.png",
     foreground: "foreground.png",
-	credits: "credits.png"
+		credits: "credits.png"
   },
   props: {
     propeller: "woodplank.png"
+  },
+  buttons: {
+		levelNumber: "button_level.png",
+		tryagain: "button_try_again.png",
+		nextlevel: "button_next_level.png",
+		quit: "button_quit.png"
   }
 };
 
@@ -132,7 +139,12 @@ function drawBackground(gameState) {
 	ctx.restore();
 }
 
-
+function drawButtonImage(name, x, y) {
+	ctx.save();
+	var img = game.images.buttons[name];
+	ctx.drawImage(img, x, y);
+	ctx.restore();
+}
 
 function drawCursor() {
 	ctx.beginPath();

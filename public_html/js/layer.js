@@ -2,8 +2,7 @@ var button = {
 	type: {
 		circle: 0,
 		rectangular: 1
-	},
-	drawLines: true
+	}
 };
 
 var menuLayer = {
@@ -16,8 +15,7 @@ var menuLayer = {
 			y: 522,
 			radius: 65,
 			callback: function() {
-				game.layer.push(selectionLayer);
-				game.currentLayer().init();
+				game.layer.push(new SelectionLayer());
 			}
 		}));
 
@@ -74,37 +72,50 @@ var creditsLayer = {
 
 
 
-var selectionLayer = {
-	buttons: [],
+function SelectionLayer() {
+	this.backButton;
+	this.buttons = [];
 	
-	init: function() {
-		var radius = 50;
-		var gap = 80;
-		var amount = levelInfo.length;
-		var x = (ctx.canvas.width / 2) - (amount-1) * (radius+gap) / 2;
-		var y = 400;
-		
-		for (var i = 0; i < amount; ++i) {
-			this.buttons.push(createButton({
-				type: button.type.circle,
-				x: x,
-				y: y,
-				radius: radius,
-				callback: function(levelNumber) {
-					game.layer.push(createLevel(levelNumber));
-				}
-			}));
-			x += radius + gap;
+	this.backButton = createButton({
+		type: button.type.rectangular,
+		x: 590,
+		y: 580,
+		width: 200,
+		height: 50,
+		callback: function() {
+			game.layer.pop();
 		}
-	},
+	});
 	
-	logic: function() {
+	var radius = 50;
+	var gap = 80;
+	var amount = levelInfo.length;
+	var x = (ctx.canvas.width / 2) - (amount-1) * (radius+gap) / 2;
+	var y = 470;
+	
+	for (var i = 0; i < amount; ++i) {
+		this.buttons.push(createButton({
+			type: button.type.circle,
+			x: x,
+			y: y,
+			radius: radius,
+			texture: "levelNumber",
+			callback: function(levelNumber) {
+				game.layer.push(createLevel(levelNumber));
+			}
+		}));
+		x += radius + gap;
+	}
+	
+	this.logic = function() {
 		
-	},
+	};
 	
-	render: function() {
+	this.render = function() {
 		clearScreen();
-//		drawBackground(""); TÄHÄN SELECTION-RUUDUN BACKGROUND
+		drawBackground("selection");
+		
+		this.backButton.render();
 		
 		var grd = ctx.createLinearGradient(0, 640, 800, 0);
 		var gradientStops = 300;
@@ -125,21 +136,24 @@ var selectionLayer = {
 			ctx.fillStyle = grd;
 			ctx.fillText(i+1, button.x, button.y+24);
 			ctx.strokeText(i+1, button.x, button.y+24);
-			
 		});
-	},
-	onClick: function(event, cursor) {
+	};
+					
+	this.onClick = function(event, cursor) {
+		if (this.backButton.isInRange(cursor.x, cursor.y))
+			this.backButton.callback();
+		
 		$.each(this.buttons, function(i, button) {
 			if (button.isInRange(cursor.x, cursor.y))
 				button.callback(i);
 		});
-	}
+	};
 };
 
 
 
 
-function LevelLayer(levelNumber) {
+function LevelLayer(info) {
 	this.clicked = false;
 	this.upperBorder = 100;
 	this.hand = {
@@ -151,7 +165,7 @@ function LevelLayer(levelNumber) {
 	this.levelNumber = 0;
 	this.dropCooldown = 0;
 	this.score = 0;
-	this.scoreGoal = 1;
+	this.scoreGoal = info.scoreGoal;
 	this.props = [];
 	this.cats = [];
 	this.deadCats = [];
@@ -161,7 +175,7 @@ function LevelLayer(levelNumber) {
 	this.buttons = [];
 
 	// "Constructor"
-	this.levelNumber = levelNumber;
+	this.levelNumber = info.levelNumber;
 	gameWorld.init();
 
 	if (debug) {
@@ -175,6 +189,7 @@ function LevelLayer(levelNumber) {
 		y: 300,
 		width: 200,
 		height: 50,
+		texture: "nextlevel",
 		callback: function() {
 			game.layer.pop();
 		}
@@ -186,7 +201,9 @@ function LevelLayer(levelNumber) {
 		y: 390,
 		width: 200,
 		height: 50,
+		texture: "quit",
 		callback: function() {
+			game.layer.pop();
 			game.layer.pop();
 		}
 	}));
@@ -407,13 +424,19 @@ function createButton(def) {
 			x: def.x,
 			y: def.y,
 			radius: def.radius,
+			texture: def.texture,
 			callback: def.callback,
 			isInRange: function(x, y) {
 				var distance = Math.sqrt(Math.pow(this.x - x, 2) + Math.pow(this.y - y, 2));
 				return distance < this.radius;
 			},
 			render: function() {
-				if (button.drawLines) {
+				if(this.texture !== undefined) {
+					var width = game.images.buttons[this.texture].width;
+					var height = game.images.buttons[this.texture].height;
+					drawButtonImage(this.texture, this.x-width/2, this.y-height/2);
+				}
+				else {
 					ctx.beginPath();
 					ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
 					ctx.stroke();
@@ -426,14 +449,19 @@ function createButton(def) {
 			y: def.y,
 			width: def.width,
 			height: def.height,
+			texture : def.texture,
 			callback: def.callback,
 			isInRange: function(x, y) {
 				return x > this.x && x < this.x + this.width &&
 								y > this.y && y < this.y + this.height;
 			},
 			render: function() {
-				if (button.drawLines)
+				if(this.texture !== undefined) {
+					drawButtonImage(this.texture, this.x, this.y);
+				}
+				else {
 					ctx.strokeRect(this.x, this.y, this.width, this.height);
+				}
 			}
 		};
 	}
