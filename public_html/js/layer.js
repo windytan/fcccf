@@ -205,7 +205,7 @@ var levelLayer = {
 	},
 	
 	onContactCatFood: function(cat, food) {
-		if (catCanEat(cat)) {
+		if (catCanEat(cat) && food.timeLeft > 0) {
 			this.eatings.push({cat: cat, food: food});
 		}
 	},
