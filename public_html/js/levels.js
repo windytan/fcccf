@@ -7,7 +7,7 @@ function createLevel(levelNumber) {
 	createLevelFrames();
   levelLayer.props = [];
 	
-	levelLayer.cats = generateCats(info.cats);
+	levelLayer.cats = generateCats(info);
 	catAI.init(levelLayer.cats);
 	levelLayer.spawnItem();
 	
@@ -16,37 +16,54 @@ function createLevel(levelNumber) {
 			levelLayer.props.push(createPropeller(propellerDef));
 		});
 	}
-	
-//	switch(levelNumber) {
-//		case 0:
-//			createDebugLevel(levelLayer);
-//			break;
-//	}
 }
 
 
 var levelInfo = [
-	{	// Test level
-		cats: 4,
-		scoreGoal: 10,
-		propellers: [{x: 650, y: 430, angle: 180}]
-	},
-	{	// Level 1
+	{
 		cats: 2,
 		scoreGoal: 10
+	},
+	{
+		cats: 3,
+		scoreGoal: 10,
+		propellers: [{x: 650, y: 430}]
+	},
+	{
+		cats: 4,
+		yMax: 500,
+		scoreGoal: 10,
+		propellers: miniPropellers()
 	}
 ];
 
 
 
-
-
-function createDebugLevel(layer) {
-	var propeller = createPropeller({
-		x: 650,
-		y: 430,
-		angle: 180
-	});
-  layer.props.push(propeller);
+function miniPropellers() {
+	var x = 33;
+	var y = 592;
+	var width = 40;
+	var height = 5;
+	var speed = 1080;
+	var angle = 0;
+	
+	var distance = 32;
+		
+	var propellers = [];
+	for (var i = 0; i < 24; ++i) {
+		var direction = false;
+		if (i % 2 === 0)
+			direction = true;
+		
+		propellers.push({
+			x: x + i * distance,
+			y: y,
+			width: width,
+			height: height,
+			speed: speed,
+			angle: angle + i % 2 * 90,
+			clockwise: direction
+		});
+	}
+	return propellers;
 }
-

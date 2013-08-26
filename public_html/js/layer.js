@@ -16,8 +16,8 @@ var menuLayer = {
 			y: 522,
 			radius: 65,
 			callback: function() {
-				game.layer.push(levelLayer);
-				game.currentLayer().init(0);
+				game.layer.push(selectionLayer);
+				game.currentLayer().init();
 			}
 		}));
 
@@ -32,6 +32,7 @@ var menuLayer = {
 			}
 		}));
 	},
+	
 	logic: function() {
 
 	},
@@ -39,7 +40,6 @@ var menuLayer = {
 	render: function() {
 		clearScreen();
 		drawBackground("menu");
-		ctx.fillStyle = "#ff9933";
 
 		$.each(this.buttons, function(i, button) {
 			button.render();
@@ -54,18 +54,6 @@ var menuLayer = {
 	}
 };
 
-
-
-
-
-var levelSelectLayer = {
-	init: function() {
-		
-	},
-	logic: function() {
-		
-	}
-}
 
 
 var creditsLayer = {
@@ -83,6 +71,53 @@ var creditsLayer = {
 		game.layer.pop();
 	}
 };
+
+
+
+var selectionLayer = {
+	buttons: [],
+	
+	init: function() {
+		var radius = 50;
+		var gap = 40;
+		var amount = levelInfo.length;
+		var x = (ctx.canvas.width / 2) - (amount-1) * (radius+gap) / 2;
+		var y = 400;
+		
+		for (var i = 0; i < amount; ++i) {
+			this.buttons.push(createButton({
+				type: button.type.circle,
+				x: x,
+				y: y,
+				radius: 30,
+				callback: function(levelNumber) {
+					game.layer.push(levelLayer);
+					game.currentLayer().init(levelNumber);
+				}
+			}));
+			x += radius + gap;
+		}
+	},
+	
+	logic: function() {
+		
+	},
+	
+	render: function() {
+		clearScreen();
+		
+		$.each(this.buttons, function(i, button) {
+			button.render();
+		});
+	},
+	onClick: function(event, cursor) {
+		$.each(this.buttons, function(i, button) {
+			if (button.isInRange(cursor.x, cursor.y))
+				button.callback(i);
+		});
+	}
+};
+
 
 
 

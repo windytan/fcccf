@@ -1,6 +1,6 @@
 var debug = true;
-var startingLayer = menuLayer;
-var startingLevelNumber = 0;
+var startingLayer = levelLayer;
+var startingLevelNumber = 2;
 
 var ctx;
 
