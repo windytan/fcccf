@@ -98,6 +98,7 @@ var levelLayer = {
 	levelNumber: 0,
 	dropCooldown: 0,
 	score: 0,
+	scoreGoal: 50,
 	props: [],
 	cats: [],
 	deadCats: [],
@@ -118,7 +119,10 @@ var levelLayer = {
 	logic: function() {
 		var i;
 		var cat;
-		
+		if(this.winClause())
+		{
+			//Show win scene
+		}
 		this.moveHand();
 		
 		if (this.dropCooldown === 0 && this.itemInHand === null) {
@@ -248,8 +252,10 @@ var levelLayer = {
 		ctx.fillStyle = "#FFFFFF";
 		ctx.font = "20px Arial";
 		ctx.fillText("Score: ", 520, 630);
+		ctx.fillText("Level Score Goal: ", 100, 630);
 		ctx.fillStyle = "#FF00FF";
 		ctx.fillText(this.score , 600, 631);
+		ctx.fillText(this.scoreGoal, 280, 631);
 	},
 
   spawnItem: function () {
@@ -291,6 +297,10 @@ var levelLayer = {
 			this.hand.x = game.cursor.x;
 		
 		this.hand.y = global.hand.y;
+	},
+	
+	winClause: function() {
+		return this.scoreGoal <= this.score;
 	}
 };
 
