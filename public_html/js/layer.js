@@ -101,9 +101,8 @@ var creditsLayer = {
 	
 	render: function() {
 		clearScreen();
-		ctx.fillStyle = "#000000";
-		ctx.font = "20px Arial";
-		ctx.fillText("Credits", 100, 100);
+		drawBackground("ingame");
+		drawBackground("credits");
 	},
 	
 	onClick: function() {
