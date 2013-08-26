@@ -98,7 +98,7 @@ function randomColor () {
   }
   while (b > r && b > g);
 
-  return { r: bottom + r,  g: bottom + g, b: bottom + b };
+  return { r: r + bottom,  g: g + bottom, b: b + bottom };
 }
 
 
