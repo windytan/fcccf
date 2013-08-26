@@ -91,8 +91,7 @@ var selectionLayer = {
 				y: y,
 				radius: 30,
 				callback: function(levelNumber) {
-					game.layer.push(levelLayer);
-					game.currentLayer().init(levelNumber);
+					game.layer.push(createLevel(levelNumber));
 				}
 			}));
 			x += radius + gap;
@@ -121,37 +120,37 @@ var selectionLayer = {
 
 
 
-var levelLayer = {
-	clicked: false,
-	upperBorder: 100,
-	hand: {
+function LevelLayer(levelNumber) {
+	this.clicked = false;
+	this.upperBorder = 100;
+	this.hand = {
 		x: 0,
 		y: 0
-	},
-	itemInHand: null,
-	items: [],
-	levelNumber: 0,
-	dropCooldown: 0,
-	score: 0,
-	scoreGoal: 50,
-	props: [],
-	cats: [],
-	deadCats: [],
-	eatings: [], // List of eatings that happened this step
+	};
+	this.itemInHand = null;
+	this.items = [];
+	this.levelNumber = 0;
+	this.dropCooldown = 0;
+	this.score = 0;
+	this.scoreGoal = 50;
+	this.props = [];
+	this.cats = [];
+	this.deadCats = [];
+	this.eatings = []; // List of eatings that happened this step
 	// Eatings are objects of form {cat, food}
 
-	init: function(levelNumber) {
-		this.levelNumber = levelNumber;
-		gameWorld.init();
+	// "Constructor"
+	this.levelNumber = levelNumber;
+	gameWorld.init();
 
-		if (debug)
-			setupDebugDraw();
+	if (debug)
+		setupDebugDraw();
 
-		world.SetContactListener(this.contactListener());
-		createLevel(this.levelNumber);
-	},
+	world.SetContactListener(createContactListener(this));
 	
-	logic: function() {
+	
+	
+	this.logic = function() {
 		var i;
 		var cat;
 		if(this.winClause())
@@ -228,44 +227,29 @@ var levelLayer = {
 				item.timeLeft -= 1;
 			}
 		}
-	},
+	};
 	
-	onClick: function(event, cursor) {
+	this.onClick = function(event, cursor) {
 		this.clicked = true;
-	},
+	};
 	
-	onContact: function(a, b) {
+	this.onContact = function(a, b) {
 		if (a.entityType === "cat" && b.entityType === "food") {
 			this.onContactCatFood(a, b);
 		}
 		else if (b.entityType === "cat" && a.entityType === "food") {
 			this.onContactCatFood(b, a);
 		}
-	},
+	}
 	
-	onContactCatFood: function(cat, food) {
+	this.onContactCatFood = function(cat, food) {
 		if (catCanEat(cat) && food.timeLeft > 0) {
 			this.eatings.push({cat: cat, food: food});
 		}
-	},
+	};
 	
-	contactListener: function() {
-		var listener = new Box2D.Dynamics.b2ContactListener();
-		var self = this;
-		listener.BeginContact = function(contact) {
-			self.onContact(contact.GetFixtureA().GetBody(),
-							contact.GetFixtureB().GetBody());
-		};
-		listener.EndContact = function() {
-		};
-		listener.PostSolve = function() {
-		};
-		listener.PreSolve = function() {
-		};
-		return listener;
-	},
 	
-	render: function() {
+	this.render = function() {
 		clearScreen();
 
 		if (debug)
@@ -291,25 +275,25 @@ var levelLayer = {
 		ctx.fillStyle = "#FF00FF";
 		ctx.fillText(this.score , 600, 631);
 		ctx.fillText(this.scoreGoal, 280, 631);
-	},
+	};
 
-  spawnItem: function () {
+  this.spawnItem = function() {
     this.itemInHand = createFood(game.cursor);
     this.itemInHand.SetActive(false);
 	playSoundEffect('snd/puff.ogg');
-  },
+  };
 
-  dropItem: function () {
+  this.dropItem = function() {
     var droppedItem = this.itemInHand;
     this.items.push(droppedItem);
 	catAI.updateFood(this.items);
     droppedItem.SetActive(true);
 	this.itemInHand = null;
 	playSoundEffect('snd/slip.ogg');
-  },
+  };
 	
 	// Remove item, return whether item was in list
-	removeItem: function(item) {
+	this.removeItem = function(item) {
 		var i;
 		for (i = 0; i < this.items.length; ++i) {
 			if (this.items[i] === item) {
@@ -321,9 +305,9 @@ var levelLayer = {
 			}
 		}
 		return false;
-	},
+	};
 	
-	moveHand: function() {
+	this.moveHand = function() {
 		if (game.cursor.x < global.hand.gapToWalls)
 			this.hand.x = global.hand.gapToWalls;
 		else if (game.cursor.x > ctx.canvas.width - global.hand.gapToWalls)
@@ -332,13 +316,29 @@ var levelLayer = {
 			this.hand.x = game.cursor.x;
 		
 		this.hand.y = global.hand.y;
-	},
+	};
 	
-	winClause: function() {
+	this.winClause = function() {
 		return this.scoreGoal <= this.score;
-	}
+	};
 };
 
+
+
+function createContactListener(self) {
+		var listener = new Box2D.Dynamics.b2ContactListener();
+		listener.BeginContact = function(contact) {
+			self.onContact(contact.GetFixtureA().GetBody(),
+							contact.GetFixtureB().GetBody());
+		};
+		listener.EndContact = function() {
+		};
+		listener.PostSolve = function() {
+		};
+		listener.PreSolve = function() {
+		};
+		return listener;
+	};
 
 
 
