@@ -28,21 +28,26 @@ function createLevel(levelNumber) {
 
 var levelInfo = [
 	{
-		cats: 2,
-		scoreGoal: 5
+		cats: 1,
+		scoreGoal: 0
 	},
 	{
 		cats: 3,
-		scoreGoal: 10,
+		scoreGoal: 0,
 		propellers: [{x: 650, y: 430}]
 	},
 	{
 		cats: 4,
 		yMax: 500,
-		scoreGoal: 15,
+		scoreGoal: 0,
 		propellers: miniPropellers()
 	}
 ];
+
+
+function amountOfLevels() {
+	return levelInfo.length;
+}
 
 
 

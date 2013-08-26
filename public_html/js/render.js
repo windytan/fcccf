@@ -34,7 +34,10 @@ var imageDefs = {
     propeller: "woodplank.png"
   },
   buttons: {
-		levelNumber: "button_level.png",
+		startButton: "button_start.png",
+		creditsButton: "button_credits.png",
+		levelButton: "button_level.png",
+		backButton: "button_back.png",
 		tryagain: "button_try_again.png",
 		nextlevel: "button_next_level.png",
 		quit: "button_quit.png"

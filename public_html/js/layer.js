@@ -14,6 +14,7 @@ var menuLayer = {
 			x: 340,
 			y: 522,
 			radius: 65,
+			texture: "startButton",
 			callback: function() {
 				game.layer.push(new SelectionLayer());
 			}
@@ -25,6 +26,7 @@ var menuLayer = {
 			y: 580,
 			width: 200,
 			height: 50,
+			texture: "creditsButton",
 			callback: function() {
 				game.layer.push(creditsLayer);
 			}
@@ -82,6 +84,7 @@ function SelectionLayer() {
 		y: 580,
 		width: 200,
 		height: 50,
+		texture: "backButton",
 		callback: function() {
 			game.layer.pop();
 		}
@@ -99,7 +102,7 @@ function SelectionLayer() {
 			x: x,
 			y: y,
 			radius: radius,
-			texture: "levelNumber",
+			texture: "levelButton",
 			callback: function(levelNumber) {
 				game.layer.push(createLevel(levelNumber));
 			}
@@ -182,18 +185,22 @@ function LevelLayer(info) {
 		setupDebugDraw();
 	}
 	world.SetContactListener(createContactListener(this));
-		
-	this.buttons.push(createButton({
-		type: button.type.rectangular,
-		x: 300,
-		y: 300,
-		width: 200,
-		height: 50,
-		texture: "nextlevel",
-		callback: function() {
-			game.layer.pop();
-		}
-	}));
+	
+	if (this.levelNumber < amountOfLevels() - 1) {
+		this.buttons.push(createButton({
+			type: button.type.rectangular,
+			x: 300,
+			y: 300,
+			width: 200,
+			height: 50,
+			texture: "nextlevel",
+			levelNumber: this.levelNumber,
+			callback: function() {
+				game.layer.pop();
+				game.layer.push(createLevel(this.levelNumber + 1));
+			}
+		}));
+	}
 	
 	this.buttons.push(createButton({
 		type: button.type.rectangular,
@@ -450,6 +457,7 @@ function createButton(def) {
 			width: def.width,
 			height: def.height,
 			texture : def.texture,
+			levelNumber: def.levelNumber,
 			callback: def.callback,
 			isInRange: function(x, y) {
 				return x > this.x && x < this.x + this.width &&
