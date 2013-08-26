@@ -3,7 +3,6 @@ var button = {
 		circle: 0,
 		rectangular: 1
 	},
-	drawLines: true
 };
 
 var menuLayer = {
@@ -132,7 +131,7 @@ function LevelLayer(levelNumber) {
 	this.levelNumber = 0;
 	this.dropCooldown = 0;
 	this.score = 0;
-	this.scoreGoal = 10;
+	this.scoreGoal = 0;
 	this.props = [];
 	this.cats = [];
 	this.deadCats = [];
@@ -156,6 +155,7 @@ function LevelLayer(levelNumber) {
 		y: 300,
 		width: 200,
 		height: 50,
+		texture: "nextlevel",
 		callback: function() {
 			game.layer.pop();
 		}
@@ -167,7 +167,9 @@ function LevelLayer(levelNumber) {
 		y: 390,
 		width: 200,
 		height: 50,
+		texture: "quit",
 		callback: function() {
+			game.layer.pop();
 			game.layer.pop();
 		}
 	}));
@@ -388,13 +390,17 @@ function createButton(def) {
 			x: def.x,
 			y: def.y,
 			radius: def.radius,
+			texture: def.texture,
 			callback: def.callback,
 			isInRange: function(x, y) {
 				var distance = Math.sqrt(Math.pow(this.x - x, 2) + Math.pow(this.y - y, 2));
 				return distance < this.radius;
 			},
 			render: function() {
-				if (button.drawLines) {
+			if(this.texture!==undefined) {
+					drawButtonImage(this.texture, this.x, this.y);
+				}
+				else {
 					ctx.beginPath();
 					ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
 					ctx.stroke();
@@ -407,14 +413,19 @@ function createButton(def) {
 			y: def.y,
 			width: def.width,
 			height: def.height,
+			texture : def.texture,
 			callback: def.callback,
 			isInRange: function(x, y) {
 				return x > this.x && x < this.x + this.width &&
 								y > this.y && y < this.y + this.height;
 			},
 			render: function() {
-				if (button.drawLines)
+				if(this.texture!==undefined) {
+					drawButtonImage(this.texture, this.x, this.y);
+				}
+				else {
 					ctx.strokeRect(this.x, this.y, this.width, this.height);
+				}
 			}
 		};
 	}
