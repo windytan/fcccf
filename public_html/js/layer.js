@@ -92,7 +92,7 @@ function SelectionLayer() {
 	
 	var radius = 50;
 	var gap = 80;
-	var amount = levelInfo.length;
+	var amount = amountOfLevels();
 	var x = (ctx.canvas.width / 2) - (amount-1) * (radius+gap) / 2;
 	var y = 470;
 	
@@ -242,9 +242,9 @@ function LevelLayer(info) {
 			var multiplier = Math.random() + 2;
 			
 			if (Math.random() < 0.5)
-				world.SetGravity({x: gameWorld.gravity*multiplier, y: 0});
+				world.SetGravity({x: gameWorld.gravity*multiplier, y: 2.5});
 			else
-				world.SetGravity({x: -gameWorld.gravity*multiplier, y: 0});
+				world.SetGravity({x: -gameWorld.gravity*multiplier, y: 2.5});
 			
 			levelLayer.goingEventCallBack = function() {
 				world.SetGravity({x: 0, y: gameWorld.gravity});

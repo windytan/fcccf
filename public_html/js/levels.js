@@ -41,6 +41,13 @@ var levelInfo = [
 		yMax: 500,
 		scoreGoal: 15,
 		propellers: miniPropellers()
+	},
+	{
+		cats: 6,
+		yMin: 390,
+		yMax: 460,
+		scoreGoal: 30,
+		propellers: funnelLevelPropellers()
 	}
 ];
 
@@ -77,5 +84,39 @@ function miniPropellers() {
 			clockwise: direction
 		});
 	}
+	return propellers;
+}
+
+function funnelLevelPropellers() {
+	var x = 110;
+	var y = 300;
+	var width = 200;
+	var speed = 0;
+	var angle = 25;
+	
+	var propellers = [];
+	
+	propellers.push({
+		x: x,
+		y: y,
+		width: width,
+		speed: speed,
+		angle: angle
+	});
+	propellers.push({
+		x: 800 - x,
+		y: y,
+		width: width,
+		speed: speed,
+		angle: -angle
+	});
+	propellers.push({
+		x: 400,
+		y: 550,
+		width: 100,
+		speed: 1080,
+		clockwise: Math.random() < 0.5
+	});
+	
 	return propellers;
 }
