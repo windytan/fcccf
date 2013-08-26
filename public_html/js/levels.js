@@ -28,10 +28,12 @@ function createLevel(levelNumber) {
 var levelInfo = [
 	{	// Test level
 		cats: 4,
+		scoreGoal: 10,
 		propellers: [{x: 650, y: 430, angle: 180}]
 	},
 	{	// Level 1
-		cats: 2
+		cats: 2,
+		scoreGoal: 10
 	}
 ];
 
