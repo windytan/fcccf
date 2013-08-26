@@ -1,6 +1,5 @@
 
 var catDefs = {
-	angle: 0, // 0
 	density: 2,
 	friction: 1,
 	restitution: 0.3,
@@ -54,7 +53,7 @@ function createCat(position) {
 		dynamic: true,
 		x: position.x,
 		y: position.y,
-		angle: catDefs.angle,
+		angle: Math.random() * 360,
 		density: catDefs.density,
 		friction: catDefs.friction, 
 		restitution: catDefs.restitution,
@@ -173,7 +172,10 @@ var catAI = {
       // }
     // }
     var ai = this;
+		
     $.each(this.cats, function (i, cat) {
+			ai.rotate(ai.cats[j]);
+			
       var pos = cat.GetPosition();
       var hungriness = 1 - Math.max(cat.timeLeft, 0) / catDefs.timeLeft;
       // Change of jumping grows with hungriness

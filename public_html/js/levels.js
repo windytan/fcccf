@@ -28,8 +28,8 @@ function createLevel(levelNumber) {
 
 var levelInfo = [
 	{
-		cats: 2,
-		scoreGoal: 5
+		cats: 1,
+		scoreGoal: 0
 	},
 	{
 		cats: 3,
@@ -43,6 +43,11 @@ var levelInfo = [
 		propellers: miniPropellers()
 	}
 ];
+
+
+function amountOfLevels() {
+	return levelInfo.length;
+}
 
 
 

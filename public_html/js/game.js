@@ -1,6 +1,6 @@
 var debug = true;
-var startingLayer = menuLayer;
-var startingLevelNumber = 2;
+var startingLayer = "menu";
+var startingLevelNumber = 1;
 
 var ctx;
 
@@ -93,8 +93,14 @@ var game = {
     }
 
 		if (debug) {
-			this.layer.push(startingLayer);
-			this.currentLayer().init(startingLevelNumber);
+			if (startingLayer === "level") {
+				this.layer.push(createLevel(startingLevelNumber));
+			} else if (startingLayer === "selection") {
+				this.layer.push(new SelectionLayer());
+			} else {
+				this.layer.push(menuLayer);
+				this.currentLayer().init();
+			}
 		} else {
 			this.layer.push(menuLayer);
 			this.currentLayer().init();

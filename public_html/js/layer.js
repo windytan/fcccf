@@ -14,6 +14,7 @@ var menuLayer = {
 			x: 340,
 			y: 522,
 			radius: 65,
+			texture: "startButton",
 			callback: function() {
 				game.layer.push(new SelectionLayer());
 			}
@@ -25,6 +26,7 @@ var menuLayer = {
 			y: 580,
 			width: 200,
 			height: 50,
+			texture: "creditsButton",
 			callback: function() {
 				game.layer.push(creditsLayer);
 			}
@@ -82,6 +84,7 @@ function SelectionLayer() {
 		y: 580,
 		width: 200,
 		height: 50,
+		texture: "backButton",
 		callback: function() {
 			game.layer.pop();
 		}
@@ -99,7 +102,7 @@ function SelectionLayer() {
 			x: x,
 			y: y,
 			radius: radius,
-			texture: "levelNumber",
+			texture: "levelButton",
 			callback: function(levelNumber) {
 				game.layer.push(createLevel(levelNumber));
 			}
@@ -117,23 +120,11 @@ function SelectionLayer() {
 		
 		this.backButton.render();
 		
-		var grd = ctx.createLinearGradient(0, 640, 800, 0);
-		var gradientStops = 300;
-		
-		for (var i = 0; i < gradientStops; ++i) {
-			var color = ["#FF0000", "#FF7F00", "#FFFF00", "#00FF00", "#0000FF", "#4B0082", "#8F00FF"];
-			grd.addColorStop(i/gradientStops, color[i % color.length]);
-		}
-		
-		grd.addColorStop(0, "#000000");
-		grd.addColorStop(0.5, "red");
-		grd.addColorStop(1, "#ffffff");
-		
 		$.each(this.buttons, function(i, button) {
 			button.render();
 			ctx.font = "70px Arial";
 			ctx.textAlign = "center";
-			ctx.fillStyle = grd;
+			ctx.fillStyle = rainbowGradient();
 			ctx.fillText(i+1, button.x, button.y+24);
 			ctx.strokeText(i+1, button.x, button.y+24);
 		});
@@ -183,18 +174,22 @@ function LevelLayer(info) {
 		setupDebugDraw();
 	}
 	world.SetContactListener(createContactListener(this));
-		
-	this.buttons.push(createButton({
-		type: button.type.rectangular,
-		x: 300,
-		y: 300,
-		width: 200,
-		height: 50,
-		texture: "nextlevel",
-		callback: function() {
-			game.layer.pop();
-		}
-	}));
+	
+	if (this.levelNumber < amountOfLevels() - 1) {
+		this.buttons.push(createButton({
+			type: button.type.rectangular,
+			x: 300,
+			y: 300,
+			width: 200,
+			height: 50,
+			texture: "nextlevel",
+			levelNumber: this.levelNumber,
+			callback: function() {
+				game.layer.pop();
+				game.layer.push(createLevel(this.levelNumber + 1));
+			}
+		}));
+	}
 	
 	this.buttons.push(createButton({
 		type: button.type.rectangular,
@@ -469,6 +464,7 @@ function createButton(def) {
 			width: def.width,
 			height: def.height,
 			texture : def.texture,
+			levelNumber: def.levelNumber,
 			callback: def.callback,
 			isInRange: function(x, y) {
 				return x > this.x && x < this.x + this.width &&
