@@ -153,26 +153,39 @@ var catAI = {
 	    this.zeFood = foodz;
 	},
 	
-    logic: function() {
-	    var position;
-			var angle = 0;
-			var j = 0;
-	    if(0<this.cats.length) {
-		    for(j = 0; j < this.cats.length; j++) {
-				this.rotate(this.cats[j]);
-				
-				if(this.cats[j].GetLinearVelocity().Length()<this.actionCap) {
-					position = this.nearestFood(j);
-					if(position!==0) {
-						angle = this.angleInRadians(this.cats[j].GetPosition(), position);
-						var force = new Box2D.Common.Math.b2Vec2(Math.cos(angle) * catDefs.jumpingPower, 
-																							Math.sin(angle) * catDefs.jumpingPower);
-						this.cats[j].ApplyImpulse(force, this.cats[j].GetPosition());
-						playSoundEffect('snd/bounce'+soundEffectVariator(3)+'.ogg');
-					}
-				}
-			}
-		}
+  logic: function() {
+    var position;
+    var angle = 0;
+    var j = 0;
+    // if(0<this.cats.length) {
+      // for(j = 0; j < this.cats.length; j++) {
+      // this.rotate(this.cats[j]);
+      
+      // if(this.cats[j].GetLinearVelocity().Length()<this.actionCap) {
+        // position = this.nearestFood(j);
+        // if(position!==0) {
+          // angle = this.angleInRadians(this.cats[j].GetPosition(), position);
+          // var force = new Box2D.Common.Math.b2Vec2(Math.cos(angle) * catDefs.jumpingPower, 
+                                            // Math.sin(angle) * catDefs.jumpingPower);
+          // this.cats[j].ApplyImpulse(force, this.cats[j].GetPosition());
+          // playSoundEffect('snd/bounce'+soundEffectVariator(3)+'.ogg');
+        // }
+      // }
+    // }
+    this.cats.forEach(function (cat) {
+      var pos = cat.GetPosition();
+      var pixPos = mToPx(pos);
+      var isNearGround = pixPos.y > ctx.canvas.height * 0.95;
+      var v = cat.GetLinearVelocity().Length();
+      var isSlow = v < 5.0;
+      if (isNearGround && isSlow) {
+        var rad = Math.random() * Math.PI; // 180 degrees
+        var power = catDefs.jumpingPower;
+        var push = new Box2D.Common.Math.b2Vec2(Math.cos(rad) * power,
+                                                -Math.sin(rad) * power);
+        cat.ApplyImpulse(push, pos);
+      }
+    });
 	},
 	
 	nearestFood: function(index) {
