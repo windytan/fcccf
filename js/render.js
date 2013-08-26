@@ -179,7 +179,7 @@ function drawBackground(gameState) {
 	ctx.restore();
 }
 
-function drawButtonImage(name, x, y) {
+function drawButtonImage(name, x, y, width, height) {
 	ctx.save();
 	var img = game.images.buttons[name];
 	ctx.drawImage(img, x, y);
