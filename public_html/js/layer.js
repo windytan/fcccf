@@ -202,7 +202,6 @@ function LevelLayer(info) {
 		
 	this.logic = function() {
 		if(this.winClause()) {
-			this.gameWon();
 			return;
 		}
 		var i;
@@ -386,6 +385,9 @@ function LevelLayer(info) {
 				playSoundEffect('snd/omnom' + soundEffectVariator(2) + '.ogg');
 				if(!this.gameLost) {
 					this.score++;
+					if(this.winClause()) {
+						this.gameWon();
+					}
 				}
 				return true;
 			}
@@ -410,6 +412,7 @@ function LevelLayer(info) {
 	
 	this.loseGame = function() {
 		this.gameLost = true;
+		playSoundEffect('snd/defeat.ogg');
 		this.buttons.push(createButton({
 			type: button.type.rectangular,
 			x: 300,
@@ -425,6 +428,7 @@ function LevelLayer(info) {
 	};
 	
 	this.gameWon = function() {
+		playSoundEffect('snd/victory.ogg');
 		if (this.levelNumber < amountOfLevels() - 1) {
 					this.buttons.push(createButton({
 						type: button.type.rectangular,
