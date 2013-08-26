@@ -92,7 +92,7 @@ function SelectionLayer() {
 	
 	var radius = 50;
 	var gap = 80;
-	var amount = levelInfo.length;
+	var amount = amountOfLevels();
 	var x = (ctx.canvas.width / 2) - (amount-1) * (radius+gap) / 2;
 	var y = 470;
 	
@@ -164,6 +164,7 @@ function LevelLayer(info) {
 	this.eatings = []; // List of eatings that happened this step
   this.eventInterval = 10 * 60;
   this.eventTimer = this.eventInterval;
+	this.goingEventCallBack = null;
 	
 	this.buttons = [];
 
@@ -189,20 +190,70 @@ function LevelLayer(info) {
 		}
 	}));
 	
-
+	
+	// Event archive
   this.events = [
-    function (levelLayer) {
-      var i = 10;
+    function(levelLayer) {		// 5-10 foods drop from hand
+      var i = Math.floor(Math.random() * 6) + 5;
       while (i --> 0) {
         levelLayer.dropItem();
         levelLayer.spawnItem();
       }
-    }
+    },
+		function(levelLayer) {		// 5-8 foods drop from heaven
+			var moarFood = Math.floor(Math.random() * 4) + 5;
+
+			for (var i = 0; i < moarFood; ++i) {
+				var food = createFood({x: Math.random()*700+50, y: -30});
+				levelLayer.items.push(food);
+				catAI.updateFood(levelLayer.items);
+				food.SetActive(true);
+			}
+		},
+		function(levelLayer) {		// Cats get rotation boost
+			$.each(levelLayer.cats, function(i, cat) {
+				if (Math.random() < 0.5)
+					cat.m_angularVelocity = -70;
+				else
+					cat.m_angularVelocity = 70;
+			});
+		},
+		function(levelLayer) {		// 2-3 cats drop from heaven
+			var moarCats = 2;
+			if (Math.random() < 0.3)
+				moarCats = 3;
+			
+			for (var i = 0; i < moarCats; ++i) {
+				var cat = createCat({x: Math.random()*700+50, y: -30});
+				cat.m_linearVelocity.SetV({x: 0, y: 10});
+				levelLayer.cats.push(cat);
+			}
+		},
+		function(levelLayer) {
+			var propellerDef = {
+				x: Math.random()*600+100,
+				y: Math.random()*435+60,
+				clockwise: Math.random() < 0.5
+			};
+			levelLayer.props.push(createPropeller(propellerDef));
+		},
+		
+		function(levelLayer) {
+			var multiplier = Math.random() + 2;
+			
+			if (Math.random() < 0.5)
+				world.SetGravity({x: gameWorld.gravity*multiplier, y: 2.5});
+			else
+				world.SetGravity({x: -gameWorld.gravity*multiplier, y: 2.5});
+			
+			levelLayer.goingEventCallBack = function() {
+				world.SetGravity({x: 0, y: gameWorld.gravity});
+			};
+		}
   ],
 		
 	this.logic = function() {
 		if(this.winClause()) {
-			this.gameWon();
 			return;
 		}
 		var i;
@@ -210,11 +261,18 @@ function LevelLayer(info) {
 		
 		this.moveHand();
 
-    this.eventTimer -= 1;
+		if (!this.gameLost)
+			this.eventTimer -= 1; // TÄMÄ KUULUU OLLA 1 ----------------------
+		
     if (this.eventTimer <= 0 && this.events.length > 0) {
+			if (this.goingEventCallBack !== null) {
+				this.goingEventCallBack();
+				this.goingEventCallBack = null;
+			}
       this.eventTimer = this.eventInterval;
       var event = randomChoice(this.events);
       console.log("Event triggered!");
+			playSoundEffect('snd/gong.ogg');
       event(this);
     }
 		
@@ -257,8 +315,8 @@ function LevelLayer(info) {
       cat.timeLeft -= 1;
       if (cat.timeLeft <= 0 && catDefs.canDie) {
         console.log("A cat just died!");
-		this.loseGame();
-		playSoundEffect('snd/die.ogg');
+				this.loseGame();
+				playSoundEffect('snd/die.ogg');
         cat.timeLeft -= 1;
         this.cats.splice(i, 1);
         this.deadCats.push(cat);
@@ -338,17 +396,17 @@ function LevelLayer(info) {
 		drawBackground("foreground");
 		ctx.fillStyle = "#FFFFFF";
 		ctx.font = "20px Arial";
-		ctx.fillText("Score: ", 520, 630);
-		ctx.fillText("Level Score Goal: ", 100, 630);
+		ctx.fillText("Level: ", 150, 633);
+		ctx.fillText("Score: ", 350, 633);
+		ctx.fillText("Goal: ", 550, 633);
 		ctx.fillStyle = "#FF00FF";
-		ctx.fillText(this.score , 600, 631);
-		ctx.fillText(this.scoreGoal, 280, 631);
+		ctx.fillText(this.levelNumber + 1, 200, 634);
+		ctx.fillText(this.score , 420, 634);
+		ctx.fillText(this.scoreGoal, 620, 634);
 		if(this.winClause() && !this.gameLost) {
 			drawButtonImage("completed", 100, 90);
 			$.each(this.buttons, function(i, button) {
-				if(button.texture != "tryagain") {
-					button.render();
-				}
+				button.render();
 			});
 		}
 		if(this.gameLost)
@@ -364,16 +422,18 @@ function LevelLayer(info) {
   this.spawnItem = function() {
     this.itemInHand = createFood(this.hand);
     this.itemInHand.SetActive(false);
-	playSoundEffect('snd/puff.ogg');
+		playSoundEffect('snd/puff.ogg');
   };
 
   this.dropItem = function() {
     var droppedItem = this.itemInHand;
-    this.items.push(droppedItem);
-	catAI.updateFood(this.items);
-    droppedItem.SetActive(true);
-	this.itemInHand = null;
-	playSoundEffect('snd/slip.ogg');
+		if (droppedItem !== null) {
+			this.items.push(droppedItem);
+			catAI.updateFood(this.items);
+			droppedItem.SetActive(true);
+			this.itemInHand = null;
+			playSoundEffect('snd/slip.ogg');
+		}
   };
 	
 	// Remove item, return whether item was in list
@@ -386,6 +446,9 @@ function LevelLayer(info) {
 				playSoundEffect('snd/omnom' + soundEffectVariator(2) + '.ogg');
 				if(!this.gameLost) {
 					this.score++;
+					if(this.winClause()) {
+						this.gameWon();
+					}
 				}
 				return true;
 			}
@@ -409,22 +472,27 @@ function LevelLayer(info) {
 	};
 	
 	this.loseGame = function() {
-		this.gameLost = true;
-		this.buttons.push(createButton({
-			type: button.type.rectangular,
-			x: 300,
-			y: 340,
-			width: 200,
-			height: 50,
-			texture: "tryagain",
-			callback: function() {
-				game.layer.pop();
-				game.layer.push(createLevel(this.levelNumber));
-			}
-		}));
+		if (!this.gameLost) {
+			this.gameLost = true;
+			playSoundEffect('snd/defeat.ogg');
+			this.buttons.push(createButton({
+				type: button.type.rectangular,
+				x: 300,
+				y: 340,
+				width: 200,
+				height: 50,
+				texture: "tryagain",
+				levelNumber: this.levelNumber,
+				callback: function() {
+					game.layer.pop();
+					game.layer.push(createLevel(this.levelNumber));
+				}
+			}));
+		}
 	};
 	
 	this.gameWon = function() {
+		playSoundEffect('snd/victory.ogg');
 		if (this.levelNumber < amountOfLevels() - 1) {
 					this.buttons.push(createButton({
 						type: button.type.rectangular,
