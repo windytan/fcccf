@@ -43,12 +43,31 @@ var levelInfo = [
 		propellers: miniPropellers()
 	},
 	{
+		cats: 6,
+		scoreGoal: 25,
+		propellers: [{x: 400, y: 320, width: 200, height: 200}]
+	},
+	{
 
 		cats: 6,
 		yMin: 390,
 		yMax: 460,
 		scoreGoal: 30,
 		propellers: funnelLevelPropellers()
+	},
+	{
+		cats: 3,
+		scoreGoal: 30
+	},
+	{
+		cats: 3,
+		scoreGoal: 50
+	},
+	{
+		cats: 5,
+		yMin:300,
+		yMax: 100,
+		scoreGoal: 50
 	},
 	{
 		cats: 3,
