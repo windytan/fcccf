@@ -132,31 +132,53 @@ function LevelLayer(levelNumber) {
 	this.levelNumber = 0;
 	this.dropCooldown = 0;
 	this.score = 0;
-	this.scoreGoal = 50;
+	this.scoreGoal = 10;
 	this.props = [];
 	this.cats = [];
 	this.deadCats = [];
 	this.eatings = []; // List of eatings that happened this step
-	// Eatings are objects of form {cat, food}
+
+	
+	this.buttons = [];
 
 	// "Constructor"
 	this.levelNumber = levelNumber;
 	gameWorld.init();
 
-	if (debug)
+	if (debug) {
 		setupDebugDraw();
-
+	}
 	world.SetContactListener(createContactListener(this));
+		
+	this.buttons.push(createButton({
+		type: button.type.rectangular,
+		x: 300,
+		y: 300,
+		width: 200,
+		height: 50,
+		callback: function() {
+			game.layer.pop();
+		}
+	}));
 	
-	
-	
+	this.buttons.push(createButton({
+		type: button.type.rectangular,
+		x: 300,
+		y: 390,
+		width: 200,
+		height: 50,
+		callback: function() {
+			game.layer.pop();
+		}
+	}));
+		
 	this.logic = function() {
+		if(this.winClause()) {
+			return;
+		}
 		var i;
 		var cat;
-		if(this.winClause())
-		{
-			//Show win scene
-		}
+		
 		this.moveHand();
 		
 		if (this.dropCooldown === 0 && this.itemInHand === null) {
@@ -228,9 +250,17 @@ function LevelLayer(levelNumber) {
 			}
 		}
 	};
-	
+
 	this.onClick = function(event, cursor) {
-		this.clicked = true;
+		if(!this.winClause()) {
+			this.clicked = true;
+		}
+		else {
+			$.each(this.buttons, function(i, button) {
+			if (button.isInRange(cursor.x, cursor.y))
+				button.callback();
+		});
+		}
 	};
 	
 	this.onContact = function(a, b) {
@@ -275,7 +305,16 @@ function LevelLayer(levelNumber) {
 		ctx.fillStyle = "#FF00FF";
 		ctx.fillText(this.score , 600, 631);
 		ctx.fillText(this.scoreGoal, 280, 631);
+		if(this.winClause()) {
+			ctx.fillStyle = "#FFCC33";
+			ctx.font = "40px Arial";
+			ctx.fillText("LEVEL COMPLETED!", 200,200);
+			$.each(this.buttons, function(i, button) {
+			button.render();
+		});
+		}
 	};
+
 
   this.spawnItem = function() {
     this.itemInHand = createFood(game.cursor);

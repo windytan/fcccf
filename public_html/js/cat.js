@@ -184,6 +184,7 @@ var catAI = {
         var push = new Box2D.Common.Math.b2Vec2(Math.cos(rad) * power,
                                                 -Math.sin(rad) * power);
         cat.ApplyImpulse(push, pos);
+		playSoundEffect('snd/bounce'+soundEffectVariator(3)+'.ogg');
       }
     });
 	},
