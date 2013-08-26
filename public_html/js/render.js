@@ -98,15 +98,20 @@ function drawCat (cat) {
   var state = catState(cat);
   var img = game.images.cat[state];
   var c = cat.catColor;
-  var hunger = 1 - Math.max(0, cat.timeLeft) / catDefs.timeLeft;
-  var ac = {
-    r: Math.floor(Math.max(c.r, 128 * (1 + hunger))),
-    g: Math.floor(c.g * (1 - 0.75 * hunger)),
-    b: Math.floor(c.b * (1 - 0.75 * hunger))
-    // g: c.g,
-    // b: c.b
-  };
-  console.log(ac, 255 * hunger);
+  var ac;
+  if (cat.timeLeft <= 0) {
+    ac = { r: 128, g: 128, b: 128 };
+  }
+  else {
+    var hunger = 1 - Math.max(0, cat.timeLeft) / catDefs.timeLeft;
+    ac = {
+      r: Math.floor(Math.max(c.r, 128 * (1 + hunger))),
+      g: Math.floor(c.g * (1 - 0.75 * hunger)),
+      b: Math.floor(c.b * (1 - 0.75 * hunger))
+      // g: c.g,
+      // b: c.b
+    };
+  }
   ctx.fillStyle = "rgb(" + ac.r + "," + ac.g + "," + ac.b + ")";
   ctx.fillRect(-w/2, -h/2, w, h);
   ctx.drawImage(img, -w/2-o, -h/2-o, w+o*2, h+o*2);
