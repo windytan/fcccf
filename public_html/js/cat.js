@@ -182,6 +182,7 @@ var catAI = {
         if (target !== 0) {
           var rad = ai.angleInRadians(pos, target);
           ai.jump(cat, rad);
+          return; // continue
         }
       }
       var pixPos = mToPx(pos);

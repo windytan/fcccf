@@ -2,6 +2,8 @@ function createLevel(levelNumber) {
 	if (levelNumber === undefined)
 		levelNumber = 0;
 	
+	var levelLayer = new LevelLayer(levelNumber)
+	
 	var info = levelInfo[levelNumber];
 	
 	createLevelFrames();
@@ -16,6 +18,8 @@ function createLevel(levelNumber) {
 			levelLayer.props.push(createPropeller(propellerDef));
 		});
 	}
+	
+	return levelLayer;
 }
 
 
