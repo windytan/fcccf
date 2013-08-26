@@ -396,11 +396,13 @@ function LevelLayer(info) {
 		drawBackground("foreground");
 		ctx.fillStyle = "#FFFFFF";
 		ctx.font = "20px Arial";
-		ctx.fillText("Score: ", 520, 630);
-		ctx.fillText("Level Score Goal: ", 100, 630);
+		ctx.fillText("Level: ", 150, 633);
+		ctx.fillText("Score: ", 350, 633);
+		ctx.fillText("Goal: ", 550, 633);
 		ctx.fillStyle = "#FF00FF";
-		ctx.fillText(this.score , 600, 631);
-		ctx.fillText(this.scoreGoal, 280, 631);
+		ctx.fillText(this.levelNumber + 1, 200, 634);
+		ctx.fillText(this.score , 420, 634);
+		ctx.fillText(this.scoreGoal, 620, 634);
 		if(this.winClause() && !this.gameLost) {
 			drawButtonImage("completed", 100, 90);
 			$.each(this.buttons, function(i, button) {
