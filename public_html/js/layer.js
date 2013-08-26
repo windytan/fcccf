@@ -183,20 +183,6 @@ var levelLayer = {
 		for (i = 0; i < this.cats.length; ++i) {
 			cat = this.cats[i];
 
-<<<<<<< Updated upstream
-			cat.timeLeft -= 1;
-			if (cat.timeLeft <= 0 && catDefs.canDie) {
-				console.log("A cat just died!");
-				cat.timeLeft -= 1;
-				this.cats.splice(i, 1);
-				this.deadCats.push(cat);
-				if (this.cats.length === 0) {
-					console.log("All cats are dead!");
-				}
-				i -= 1;
-			}
-		}
-=======
       cat.timeLeft -= 1;
       if (cat.timeLeft <= 0 && catDefs.canDie) {
         console.log("A cat just died!");
@@ -210,7 +196,6 @@ var levelLayer = {
         i -= 1;
       }
     }
->>>>>>> Stashed changes
 
 		// Handle dead cats
 		for (i = 0; i < this.deadCats.length; ++i) {
@@ -287,17 +272,6 @@ var levelLayer = {
 		}
 		drawBackground("foreground");
 	},
-<<<<<<< Updated upstream
-	
-	spawnItem: function() {
-		this.itemInHand = createFood(game.cursor);
-		this.itemInHand.SetActive(false);
-	},
-	
-	dropItem: function() {
-		var droppedItem = this.itemInHand;
-		this.items.push(droppedItem);
-=======
 
   spawnItem: function () {
     this.itemInHand = createFood(game.cursor);
@@ -313,18 +287,6 @@ var levelLayer = {
 	this.itemInHand = null;
 	playSoundEffect('snd/slip.ogg');
   },
-
-  // Remove item, return whether item was in list
-  removeItem: function (item) {
-    var i;
-    for (i = 0; i < this.items.length; ++i) {
-      if (this.items[i] === item) {
-        this.items.splice(i, 1);
->>>>>>> Stashed changes
-		catAI.updateFood(this.items);
-		droppedItem.SetActive(true);
-		this.itemInHand = null;
-	},
 	
 	// Remove item, return whether item was in list
 	removeItem: function(item) {
