@@ -214,6 +214,7 @@ function LevelLayer(info) {
       this.eventTimer = this.eventInterval;
       var event = randomChoice(this.events);
       console.log("Event triggered!");
+	  playSoundEffect('snd/gong.ogg');
       event(this);
     }
 		
