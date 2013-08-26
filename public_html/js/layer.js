@@ -239,7 +239,7 @@ function LevelLayer(info) {
 		},
 		
 		function(levelLayer) {
-			var multiplier = Math.random() + 1;
+			var multiplier = Math.random() + 2;
 			
 			if (Math.random() < 0.5)
 				world.SetGravity({x: gameWorld.gravity*multiplier, y: 0});
@@ -272,7 +272,7 @@ function LevelLayer(info) {
       this.eventTimer = this.eventInterval;
       var event = randomChoice(this.events);
       console.log("Event triggered!");
-	  playSoundEffect('snd/gong.ogg');
+			playSoundEffect('snd/gong.ogg');
       event(this);
     }
 		
@@ -470,20 +470,23 @@ function LevelLayer(info) {
 	};
 	
 	this.loseGame = function() {
-		this.gameLost = true;
-		playSoundEffect('snd/defeat.ogg');
-		this.buttons.push(createButton({
-			type: button.type.rectangular,
-			x: 300,
-			y: 340,
-			width: 200,
-			height: 50,
-			texture: "tryagain",
-			callback: function() {
-				game.layer.pop();
-				game.layer.push(createLevel(this.levelNumber));
-			}
-		}));
+		if (!this.gameLost) {
+			this.gameLost = true;
+			playSoundEffect('snd/defeat.ogg');
+			this.buttons.push(createButton({
+				type: button.type.rectangular,
+				x: 300,
+				y: 340,
+				width: 200,
+				height: 50,
+				texture: "tryagain",
+				levelNumber: this.levelNumber,
+				callback: function() {
+					game.layer.pop();
+					game.layer.push(createLevel(this.levelNumber));
+				}
+			}));
+		}
 	};
 	
 	this.gameWon = function() {

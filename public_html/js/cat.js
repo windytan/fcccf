@@ -153,24 +153,8 @@ var catAI = {
 	},
 	
   logic: function() {
-    var position;
-    var angle = 0;
     var j = 0;
-    // if(0<this.cats.length) {
-      // for(j = 0; j < this.cats.length; j++) {
-      // this.rotate(this.cats[j]);
-      
-      // if(this.cats[j].GetLinearVelocity().Length()<this.actionCap) {
-        // position = this.nearestFood(j);
-        // if(position!==0) {
-          // angle = this.angleInRadians(this.cats[j].GetPosition(), position);
-          // var force = new Box2D.Common.Math.b2Vec2(Math.cos(angle) * catDefs.jumpingPower, 
-                                            // Math.sin(angle) * catDefs.jumpingPower);
-          // this.cats[j].ApplyImpulse(force, this.cats[j].GetPosition());
-          // playSoundEffect('snd/bounce'+soundEffectVariator(3)+'.ogg');
-        // }
-      // }
-    // }
+    
     var ai = this;
 		
     $.each(this.cats, function (i, cat) {
@@ -179,7 +163,7 @@ var catAI = {
       var pos = cat.GetPosition();
       var hungriness = 1 - Math.max(cat.timeLeft, 0) / catDefs.timeLeft;
       // Change of jumping grows with hungriness
-      if (Math.random() < 0.1 * (hungriness - 0.5)) {
+      if (Math.random() < 0.05 * (hungriness - 0.5)) {
         var target = ai.nearestFood(i);
         if (target !== 0) {
           var rad = ai.angleInRadians(pos, target);
