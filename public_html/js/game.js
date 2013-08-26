@@ -1,4 +1,4 @@
-var debug = false;
+var debug = true;
 var startingLayer = menuLayer;
 var startingLevelNumber = 2;
 

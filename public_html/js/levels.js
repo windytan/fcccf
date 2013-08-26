@@ -2,9 +2,12 @@ function createLevel(levelNumber) {
 	if (levelNumber === undefined)
 		levelNumber = 0;
 	
-	var levelLayer = new LevelLayer(levelNumber)
-	
 	var info = levelInfo[levelNumber];
+	
+	var levelLayer = new LevelLayer({
+		levelNumber: levelNumber,
+		scoreGoal: info.scoreGoal
+	});
 	
 	createLevelFrames();
   levelLayer.props = [];
@@ -26,7 +29,7 @@ function createLevel(levelNumber) {
 var levelInfo = [
 	{
 		cats: 2,
-		scoreGoal: 10
+		scoreGoal: 5
 	},
 	{
 		cats: 3,
@@ -36,7 +39,7 @@ var levelInfo = [
 	{
 		cats: 4,
 		yMax: 500,
-		scoreGoal: 10,
+		scoreGoal: 15,
 		propellers: miniPropellers()
 	}
 ];

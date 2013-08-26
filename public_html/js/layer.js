@@ -2,7 +2,7 @@ var button = {
 	type: {
 		circle: 0,
 		rectangular: 1
-	},
+	}
 };
 
 var menuLayer = {
@@ -15,8 +15,7 @@ var menuLayer = {
 			y: 522,
 			radius: 65,
 			callback: function() {
-				game.layer.push(selectionLayer);
-				game.currentLayer().init();
+				game.layer.push(new SelectionLayer());
 			}
 		}));
 
@@ -73,53 +72,88 @@ var creditsLayer = {
 
 
 
-var selectionLayer = {
-	buttons: [],
+function SelectionLayer() {
+	this.backButton;
+	this.buttons = [];
 	
-	init: function() {
-		var radius = 50;
-		var gap = 40;
-		var amount = levelInfo.length;
-		var x = (ctx.canvas.width / 2) - (amount-1) * (radius+gap) / 2;
-		var y = 400;
-		
-		for (var i = 0; i < amount; ++i) {
-			this.buttons.push(createButton({
-				type: button.type.circle,
-				x: x,
-				y: y,
-				radius: 30,
-				callback: function(levelNumber) {
-					game.layer.push(createLevel(levelNumber));
-				}
-			}));
-			x += radius + gap;
+	this.backButton = createButton({
+		type: button.type.rectangular,
+		x: 590,
+		y: 580,
+		width: 200,
+		height: 50,
+		callback: function() {
+			game.layer.pop();
 		}
-	},
+	});
 	
-	logic: function() {
+	var radius = 50;
+	var gap = 80;
+	var amount = levelInfo.length;
+	var x = (ctx.canvas.width / 2) - (amount-1) * (radius+gap) / 2;
+	var y = 470;
+	
+	for (var i = 0; i < amount; ++i) {
+		this.buttons.push(createButton({
+			type: button.type.circle,
+			x: x,
+			y: y,
+			radius: radius,
+			texture: "levelNumber",
+			callback: function(levelNumber) {
+				game.layer.push(createLevel(levelNumber));
+			}
+		}));
+		x += radius + gap;
+	}
+	
+	this.logic = function() {
 		
-	},
+	};
 	
-	render: function() {
+	this.render = function() {
 		clearScreen();
+		drawBackground("selection");
+		
+		this.backButton.render();
+		
+		var grd = ctx.createLinearGradient(0, 640, 800, 0);
+		var gradientStops = 300;
+		
+		for (var i = 0; i < gradientStops; ++i) {
+			var color = ["#FF0000", "#FF7F00", "#FFFF00", "#00FF00", "#0000FF", "#4B0082", "#8F00FF"];
+			grd.addColorStop(i/gradientStops, color[i % color.length]);
+		}
+		
+		grd.addColorStop(0, "#000000");
+		grd.addColorStop(0.5, "red");
+		grd.addColorStop(1, "#ffffff");
 		
 		$.each(this.buttons, function(i, button) {
 			button.render();
+			ctx.font = "70px Arial";
+			ctx.textAlign = "center";
+			ctx.fillStyle = grd;
+			ctx.fillText(i+1, button.x, button.y+24);
+			ctx.strokeText(i+1, button.x, button.y+24);
 		});
-	},
-	onClick: function(event, cursor) {
+	};
+					
+	this.onClick = function(event, cursor) {
+		if (this.backButton.isInRange(cursor.x, cursor.y))
+			this.backButton.callback();
+		
 		$.each(this.buttons, function(i, button) {
 			if (button.isInRange(cursor.x, cursor.y))
 				button.callback(i);
 		});
-	}
+	};
 };
 
 
 
 
-function LevelLayer(levelNumber) {
+function LevelLayer(info) {
 	this.clicked = false;
 	this.upperBorder = 100;
 	this.hand = {
@@ -131,17 +165,18 @@ function LevelLayer(levelNumber) {
 	this.levelNumber = 0;
 	this.dropCooldown = 0;
 	this.score = 0;
-	this.scoreGoal = 0;
+	this.scoreGoal = info.scoreGoal;
 	this.props = [];
 	this.cats = [];
 	this.deadCats = [];
 	this.eatings = []; // List of eatings that happened this step
-
+  this.eventInterval = 10 * 60;
+  this.eventTimer = this.eventInterval;
 	
 	this.buttons = [];
 
 	// "Constructor"
-	this.levelNumber = levelNumber;
+	this.levelNumber = info.levelNumber;
 	gameWorld.init();
 
 	if (debug) {
@@ -173,6 +208,16 @@ function LevelLayer(levelNumber) {
 			game.layer.pop();
 		}
 	}));
+
+  this.events = [
+    function (levelLayer) {
+      var i = 10;
+      while (i --> 0) {
+        levelLayer.dropItem();
+        levelLayer.spawnItem();
+      }
+    }
+  ],
 		
 	this.logic = function() {
 		if(this.winClause()) {
@@ -182,6 +227,14 @@ function LevelLayer(levelNumber) {
 		var cat;
 		
 		this.moveHand();
+
+    this.eventTimer -= 1;
+    if (this.eventTimer <= 0 && this.events.length > 0) {
+      this.eventTimer = this.eventInterval;
+      var event = randomChoice(this.events);
+      console.log("Event triggered!");
+      event(this);
+    }
 		
 		if (this.dropCooldown === 0 && this.itemInHand === null) {
 			this.spawnItem();
@@ -272,7 +325,7 @@ function LevelLayer(levelNumber) {
 		else if (b.entityType === "cat" && a.entityType === "food") {
 			this.onContactCatFood(b, a);
 		}
-	}
+	};
 	
 	this.onContactCatFood = function(cat, food) {
 		if (catCanEat(cat) && food.timeLeft > 0) {
@@ -319,7 +372,7 @@ function LevelLayer(levelNumber) {
 
 
   this.spawnItem = function() {
-    this.itemInHand = createFood(game.cursor);
+    this.itemInHand = createFood(this.hand);
     this.itemInHand.SetActive(false);
 	playSoundEffect('snd/puff.ogg');
   };
@@ -397,8 +450,10 @@ function createButton(def) {
 				return distance < this.radius;
 			},
 			render: function() {
-			if(this.texture!==undefined) {
-					drawButtonImage(this.texture, this.x, this.y);
+				if(this.texture !== undefined) {
+					var width = game.images.buttons[this.texture].width;
+					var height = game.images.buttons[this.texture].height;
+					drawButtonImage(this.texture, this.x-width/2, this.y-height/2);
 				}
 				else {
 					ctx.beginPath();
@@ -420,7 +475,7 @@ function createButton(def) {
 								y > this.y && y < this.y + this.height;
 			},
 			render: function() {
-				if(this.texture!==undefined) {
+				if(this.texture !== undefined) {
 					drawButtonImage(this.texture, this.x, this.y);
 				}
 				else {
