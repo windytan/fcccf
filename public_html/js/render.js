@@ -28,7 +28,7 @@ var imageDefs = {
 		selection: "level_select.png",
     ingame: "background.png",
     foreground: "foreground.png",
-		credits: "credits.png"
+		credits: "credits.png",
   },
   props: {
     propeller: "woodplank.png"
@@ -40,7 +40,9 @@ var imageDefs = {
 		backButton: "button_back.png",
 		tryagain: "button_try_again.png",
 		nextlevel: "button_next_level.png",
-		quit: "button_quit.png"
+		quit: "button_quit.png",
+		completed: "level_completed.png",
+		lost: "game_over.png"
   }
 };
 
