@@ -55,41 +55,15 @@ var menuLayer = {
 };
 
 
-function createButton(def) {
-	if (def.type === button.type.circle) {
-		return {
-			x: def.x,
-			y: def.y,
-			radius: def.radius,
-			callback: def.callback,
-			isInRange: function(x, y) {
-				var distance = Math.sqrt(Math.pow(this.x - x, 2) + Math.pow(this.y - y, 2));
-				return distance < this.radius;
-			},
-			render: function() {
-				if (button.drawLines) {
-					ctx.beginPath();
-					ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
-					ctx.stroke();
-				}
-			}
-		};
-	} else if (def.type === button.type.rectangular) {
-		return {
-			x: def.x,
-			y: def.y,
-			width: def.width,
-			height: def.height,
-			callback: def.callback,
-			isInRange: function(x, y) {
-				return x > this.x && x < this.x + this.width &&
-								y > this.y && y < this.y + this.height;
-			},
-			render: function() {
-				if (button.drawLines)
-					ctx.strokeRect(this.x, this.y, this.width, this.height);
-			}
-		};
+
+
+
+var levelSelectLayer = {
+	init: function() {
+		
+	},
+	logic: function() {
+		
 	}
 }
 
@@ -123,7 +97,7 @@ var levelLayer = {
 	itemInHand: null,
 	items: [],
 	levelNumber: 0,
-	dropRate: 0,
+	dropCooldown: 0,
 	props: [],
 	cats: [],
 	deadCats: [],
@@ -147,15 +121,15 @@ var levelLayer = {
 		
 		this.moveHand();
 		
-		if (this.dropRate === 0 && this.itemInHand === null) {
+		if (this.dropCooldown === 0 && this.itemInHand === null) {
 			this.spawnItem();
 		}
 		catAI.logic();
 		if (this.itemInHand !== null) {
 			this.itemInHand.SetPosition(pxToM(this.hand));
 		}
-		if (this.clicked && this.dropRate === 0) {
-			this.dropRate = 100;
+		if (this.clicked && this.dropCooldown === 0) {
+			this.dropCooldown = global.dropCooldown;
 			this.dropItem();
 		}
 		this.clicked = false;
@@ -174,8 +148,8 @@ var levelLayer = {
 				// console.log("Cat", cat, "eats", food);
 			}
 		}
-		if (this.dropRate > 0) {
-			this.dropRate -= 1;
+		if (this.dropCooldown > 0) {
+			this.dropCooldown -= 1;
 		}
 		this.eatings.length = 0; // clear list of eatings
 
@@ -314,3 +288,44 @@ var levelLayer = {
 	}
 };
 
+
+
+
+
+function createButton(def) {
+	if (def.type === button.type.circle) {
+		return {
+			x: def.x,
+			y: def.y,
+			radius: def.radius,
+			callback: def.callback,
+			isInRange: function(x, y) {
+				var distance = Math.sqrt(Math.pow(this.x - x, 2) + Math.pow(this.y - y, 2));
+				return distance < this.radius;
+			},
+			render: function() {
+				if (button.drawLines) {
+					ctx.beginPath();
+					ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
+					ctx.stroke();
+				}
+			}
+		};
+	} else if (def.type === button.type.rectangular) {
+		return {
+			x: def.x,
+			y: def.y,
+			width: def.width,
+			height: def.height,
+			callback: def.callback,
+			isInRange: function(x, y) {
+				return x > this.x && x < this.x + this.width &&
+								y > this.y && y < this.y + this.height;
+			},
+			render: function() {
+				if (button.drawLines)
+					ctx.strokeRect(this.x, this.y, this.width, this.height);
+			}
+		};
+	}
+}

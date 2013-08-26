@@ -14,7 +14,8 @@ var global = {
 	hand: {
 		y: 75,
 		gapToWalls: 65
-	}
+	},
+	dropCooldown: 60
 };
 
 
@@ -164,10 +165,10 @@ function playSoundEffect(name) {
 	snd.play();
 }
 
-function soundEffectVariator(maxIndex)
-{
+function soundEffectVariator(maxIndex) {
 	return Math.floor(Math.random()*maxIndex+1);
 }
+
 window.requestAnimFrame = (function(){
   return window.requestAnimationFrame		  ||
 		  window.webkitRequestAnimationFrame  ||

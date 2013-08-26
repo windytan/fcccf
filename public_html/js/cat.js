@@ -117,13 +117,13 @@ function validSpawnSpot(position, catPosiArray) {
 }
 
 
-function generateCats() {
+function generateCats(amount) {
 	var catLocations = [];
 	var numCats = catDefs.minAmount + Math.random()*catDefs.maxAmount;
 	var spawnSpot;
   var cats = [];
-  var i = 0;
-	for (i = 0; i < numCats-1; i++)
+	
+	for (var i = 0; i < amount; i++)
 	{
 		spawnSpot = {x: Math.random()*(ctx.canvas.width-catDefs.width/2), y: ctx.canvas.height-catDefs.height/2- Math.random()*catDefs.maxSpawnY};
 		while(!validSpawnSpot(spawnSpot, catLocations))
