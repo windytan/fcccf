@@ -120,23 +120,11 @@ function SelectionLayer() {
 		
 		this.backButton.render();
 		
-		var grd = ctx.createLinearGradient(0, 640, 800, 0);
-		var gradientStops = 300;
-		
-		for (var i = 0; i < gradientStops; ++i) {
-			var color = ["#FF0000", "#FF7F00", "#FFFF00", "#00FF00", "#0000FF", "#4B0082", "#8F00FF"];
-			grd.addColorStop(i/gradientStops, color[i % color.length]);
-		}
-		
-		grd.addColorStop(0, "#000000");
-		grd.addColorStop(0.5, "red");
-		grd.addColorStop(1, "#ffffff");
-		
 		$.each(this.buttons, function(i, button) {
 			button.render();
 			ctx.font = "70px Arial";
 			ctx.textAlign = "center";
-			ctx.fillStyle = grd;
+			ctx.fillStyle = rainbowGradient();
 			ctx.fillText(i+1, button.x, button.y+24);
 			ctx.strokeText(i+1, button.x, button.y+24);
 		});

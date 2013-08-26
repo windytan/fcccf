@@ -112,7 +112,28 @@ function drawHand(x, y) {
 	ctx.translate(x, y);
 	ctx.drawImage(img, -w / 2, -h / 2 - 20, w, h);
 	ctx.restore();
+	
+	var number = game.currentLayer().eventTimer / 60;
+	number = Math.ceil(number);
+	ctx.font = "30px Arial";
+	ctx.textAlign = "center";
+	ctx.fillStyle = rainbowGradient();
+
+	ctx.fillText(number, x, y-45);
+	ctx.strokeText(number, x, y-45);
 }
+
+function rainbowGradient() {
+	var grd = ctx.createLinearGradient(0, 640, 800, 0);
+	var gradientStops = 300;
+
+	for (var i = 0; i < gradientStops; ++i) {
+		var color = ["#FF0000", "#FF7F00", "#FFFF00", "#00FF00", "#0000FF", "#4B0082", "#8F00FF"];
+		grd.addColorStop(i/gradientStops, color[i % color.length]);
+	}
+	return grd;
+}
+
 
 function drawItem (item) {
   ctx.save();

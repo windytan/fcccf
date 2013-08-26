@@ -263,8 +263,6 @@ var catAI = {
 		
 		change -= cat.m_angularVelocity * catDefs.rotationMultiplier.velocityReducer;
 		
-		console.log(change);
-		
 		cat.m_angularVelocity += change;
 	}
 };
