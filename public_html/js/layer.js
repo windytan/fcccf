@@ -254,7 +254,6 @@ function LevelLayer(info) {
 		
 	this.logic = function() {
 		if(this.winClause()) {
-			this.gameWon();
 			return;
 		}
 		var i;
@@ -273,6 +272,7 @@ function LevelLayer(info) {
       this.eventTimer = this.eventInterval;
       var event = randomChoice(this.events);
       console.log("Event triggered!");
+	  playSoundEffect('snd/gong.ogg');
       event(this);
     }
 		
@@ -444,6 +444,9 @@ function LevelLayer(info) {
 				playSoundEffect('snd/omnom' + soundEffectVariator(2) + '.ogg');
 				if(!this.gameLost) {
 					this.score++;
+					if(this.winClause()) {
+						this.gameWon();
+					}
 				}
 				return true;
 			}
@@ -467,42 +470,39 @@ function LevelLayer(info) {
 	};
 	
 	this.loseGame = function() {
-		if (!this.gameLost) {
-			this.gameLost = true;
-			this.buttons.push(createButton({
-				type: button.type.rectangular,
-				x: 300,
-				y: 340,
-				width: 200,
-				height: 50,
-				texture: "tryagain",
-				levelNumber: this.levelNumber,
-				callback: function() {
-					game.layer.pop();
-					game.layer.push(createLevel(this.levelNumber));
-				}
-			}));
-		}
+		this.gameLost = true;
+		playSoundEffect('snd/defeat.ogg');
+		this.buttons.push(createButton({
+			type: button.type.rectangular,
+			x: 300,
+			y: 340,
+			width: 200,
+			height: 50,
+			texture: "tryagain",
+			callback: function() {
+				game.layer.pop();
+				game.layer.push(createLevel(this.levelNumber));
+			}
+		}));
 	};
 	
 	this.gameWon = function() {
-		if(this.buttons.length < 2) {
-			if (this.levelNumber < amountOfLevels() - 1) {
-				this.buttons.push(createButton({
-					type: button.type.rectangular,
-					x: 300,
-					y: 340,
-					width: 200,
-					height: 50,
-					texture: "nextlevel",
-					levelNumber: this.levelNumber,
-					callback: function() {
-						game.layer.pop();
-						game.layer.push(createLevel(this.levelNumber + 1));
-					}
-				}));
-			}
-		}
+		playSoundEffect('snd/victory.ogg');
+		if (this.levelNumber < amountOfLevels() - 1) {
+					this.buttons.push(createButton({
+						type: button.type.rectangular,
+						x: 300,
+						y: 340,
+						width: 200,
+						height: 50,
+						texture: "nextlevel",
+						levelNumber: this.levelNumber,
+						callback: function() {
+							game.layer.pop();
+							game.layer.push(createLevel(this.levelNumber + 1));
+						}
+					}));
+				}
 	};
 };
 
