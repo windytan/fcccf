@@ -170,7 +170,8 @@ function LevelLayer(info) {
 	this.cats = [];
 	this.deadCats = [];
 	this.eatings = []; // List of eatings that happened this step
-
+  this.eventInterval = 10 * 60;
+  this.eventTimer = this.eventInterval;
 	
 	this.buttons = [];
 
@@ -207,6 +208,16 @@ function LevelLayer(info) {
 			game.layer.pop();
 		}
 	}));
+
+  this.events = [
+    function (levelLayer) {
+      var i = 10;
+      while (i --> 0) {
+        levelLayer.dropItem();
+        levelLayer.spawnItem();
+      }
+    }
+  ],
 		
 	this.logic = function() {
 		if(this.winClause()) {
@@ -216,6 +227,14 @@ function LevelLayer(info) {
 		var cat;
 		
 		this.moveHand();
+
+    this.eventTimer -= 1;
+    if (this.eventTimer <= 0 && this.events.length > 0) {
+      this.eventTimer = this.eventInterval;
+      var event = randomChoice(this.events);
+      console.log("Event triggered!");
+      event(this);
+    }
 		
 		if (this.dropCooldown === 0 && this.itemInHand === null) {
 			this.spawnItem();
@@ -353,7 +372,7 @@ function LevelLayer(info) {
 
 
   this.spawnItem = function() {
-    this.itemInHand = createFood(game.cursor);
+    this.itemInHand = createFood(this.hand);
     this.itemInHand.SetActive(false);
 	playSoundEffect('snd/puff.ogg');
   };
