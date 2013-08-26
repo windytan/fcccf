@@ -29,11 +29,11 @@ function createLevel(levelNumber) {
 var levelInfo = [
 	{
 		cats: 1,
-		scoreGoal: 0
+		scoreGoal: 10
 	},
 	{
 		cats: 3,
-		scoreGoal: 0,
+		scoreGoal: 50,
 		propellers: [{x: 650, y: 430}]
 	},
 	{

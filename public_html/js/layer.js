@@ -163,6 +163,7 @@ function LevelLayer(info) {
 		x: 0,
 		y: 0
 	};
+	this.gameLost = false;
 	this.itemInHand = null;
 	this.items = [];
 	this.levelNumber = 0;
@@ -187,26 +188,10 @@ function LevelLayer(info) {
 	}
 	world.SetContactListener(createContactListener(this));
 	
-	if (this.levelNumber < amountOfLevels() - 1) {
-		this.buttons.push(createButton({
-			type: button.type.rectangular,
-			x: 300,
-			y: 300,
-			width: 200,
-			height: 50,
-			texture: "nextlevel",
-			levelNumber: this.levelNumber,
-			callback: function() {
-				game.layer.pop();
-				game.layer.push(createLevel(this.levelNumber + 1));
-			}
-		}));
-	}
-	
 	this.buttons.push(createButton({
 		type: button.type.rectangular,
 		x: 300,
-		y: 390,
+		y: 430,
 		width: 200,
 		height: 50,
 		texture: "quit",
@@ -215,6 +200,7 @@ function LevelLayer(info) {
 			game.layer.pop();
 		}
 	}));
+	
 
   this.events = [
     function (levelLayer) {
@@ -228,6 +214,7 @@ function LevelLayer(info) {
 		
 	this.logic = function() {
 		if(this.winClause()) {
+			this.gameWon();
 			return;
 		}
 		var i;
@@ -282,6 +269,7 @@ function LevelLayer(info) {
       cat.timeLeft -= 1;
       if (cat.timeLeft <= 0 && catDefs.canDie) {
         console.log("A cat just died!");
+		this.loseGame();
 		playSoundEffect('snd/die.ogg');
         cat.timeLeft -= 1;
         this.cats.splice(i, 1);
@@ -314,7 +302,7 @@ function LevelLayer(info) {
 	};
 
 	this.onClick = function(event, cursor) {
-		if(!this.winClause()) {
+		if(!this.winClause() && !this.gameLost) {
 			this.clicked = true;
 		}
 		else {
@@ -367,13 +355,20 @@ function LevelLayer(info) {
 		ctx.fillStyle = "#FF00FF";
 		ctx.fillText(this.score , 600, 631);
 		ctx.fillText(this.scoreGoal, 280, 631);
-		if(this.winClause()) {
-			ctx.fillStyle = "#FFCC33";
-			ctx.font = "40px Arial";
-			ctx.fillText("LEVEL COMPLETED!", 200,200);
+		if(this.winClause() && !this.gameLost) {
+			drawButtonImage("completed", 100, 90);
 			$.each(this.buttons, function(i, button) {
-			button.render();
-		});
+				if(button.texture != "tryagain") {
+					button.render();
+				}
+			});
+		}
+		if(this.gameLost)
+		{
+			drawButtonImage("lost", 100, 90);
+			$.each(this.buttons, function(i, button) {
+					button.render();
+			});
 		}
 	};
 
@@ -401,7 +396,9 @@ function LevelLayer(info) {
 				this.items.splice(i, 1);
 				catAI.updateFood(this.items);
 				playSoundEffect('snd/omnom' + soundEffectVariator(2) + '.ogg');
-				this.score++;
+				if(!this.gameLost) {
+					this.score++;
+				}
 				return true;
 			}
 		}
@@ -421,6 +418,40 @@ function LevelLayer(info) {
 	
 	this.winClause = function() {
 		return this.scoreGoal <= this.score;
+	};
+	
+	this.loseGame = function() {
+		this.gameLost = true;
+		this.buttons.push(createButton({
+			type: button.type.rectangular,
+			x: 300,
+			y: 340,
+			width: 200,
+			height: 50,
+			texture: "tryagain",
+			callback: function() {
+				game.layer.pop();
+				game.layer.push(createLevel(this.levelNumber));
+			}
+		}));
+	};
+	
+	this.gameWon = function() {
+		if (this.levelNumber < amountOfLevels() - 1) {
+					this.buttons.push(createButton({
+						type: button.type.rectangular,
+						x: 300,
+						y: 340,
+						width: 200,
+						height: 50,
+						texture: "nextlevel",
+						levelNumber: this.levelNumber,
+						callback: function() {
+							game.layer.pop();
+							game.layer.push(createLevel(this.levelNumber + 1));
+						}
+					}));
+				}
 	};
 };
 
