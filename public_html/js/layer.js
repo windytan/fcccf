@@ -164,6 +164,7 @@ function LevelLayer(info) {
 	this.eatings = []; // List of eatings that happened this step
   this.eventInterval = 10 * 60;
   this.eventTimer = this.eventInterval;
+	this.goingEventCallBack = null;
 	
 	this.buttons = [];
 
@@ -189,15 +190,66 @@ function LevelLayer(info) {
 		}
 	}));
 	
-
+	
+	// Event archive
   this.events = [
-    function (levelLayer) {
-      var i = 10;
+    function(levelLayer) {		// 5-10 foods drop from hand
+      var i = Math.floor(Math.random() * 6) + 5;
       while (i --> 0) {
         levelLayer.dropItem();
         levelLayer.spawnItem();
       }
-    }
+    },
+		function(levelLayer) {		// 5-8 foods drop from heaven
+			var moarFood = Math.floor(Math.random() * 4) + 5;
+
+			for (var i = 0; i < moarFood; ++i) {
+				var food = createFood({x: Math.random()*700+50, y: -30});
+				levelLayer.items.push(food);
+				catAI.updateFood(levelLayer.items);
+				food.SetActive(true);
+			}
+		},
+		function(levelLayer) {		// Cats get rotation boost
+			$.each(levelLayer.cats, function(i, cat) {
+				if (Math.random() < 0.5)
+					cat.m_angularVelocity = -70;
+				else
+					cat.m_angularVelocity = 70;
+			});
+		},
+		function(levelLayer) {		// 2-3 cats drop from heaven
+			var moarCats = 2;
+			if (Math.random() < 0.3)
+				moarCats = 3;
+			
+			for (var i = 0; i < moarCats; ++i) {
+				var cat = createCat({x: Math.random()*700+50, y: -30});
+				cat.m_linearVelocity.SetV({x: 0, y: 10});
+				levelLayer.cats.push(cat);
+			}
+		},
+		function(levelLayer) {
+			var propellerDef = {
+				x: Math.random()*600+100,
+				y: Math.random()*435+60,
+				clockwise: Math.random() < 0.5
+			};
+			levelLayer.props.push(createPropeller(propellerDef));
+		},
+		
+		function(levelLayer) {
+			var multiplier = Math.random() + 1;
+			
+			if (Math.random() < 0.5)
+				world.SetGravity({x: gameWorld.gravity*multiplier, y: 0});
+			else
+				world.SetGravity({x: -gameWorld.gravity*multiplier, y: 0});
+			
+			levelLayer.goingEventCallBack = function() {
+				world.SetGravity({x: 0, y: gameWorld.gravity});
+			};
+		}
   ],
 		
 	this.logic = function() {
@@ -210,8 +262,14 @@ function LevelLayer(info) {
 		
 		this.moveHand();
 
-    this.eventTimer -= 1;
+		if (!this.gameLost)
+			this.eventTimer -= 1; // TÄMÄ KUULUU OLLA 1 ----------------------
+		
     if (this.eventTimer <= 0 && this.events.length > 0) {
+			if (this.goingEventCallBack !== null) {
+				this.goingEventCallBack();
+				this.goingEventCallBack = null;
+			}
       this.eventTimer = this.eventInterval;
       var event = randomChoice(this.events);
       console.log("Event triggered!");
@@ -257,8 +315,8 @@ function LevelLayer(info) {
       cat.timeLeft -= 1;
       if (cat.timeLeft <= 0 && catDefs.canDie) {
         console.log("A cat just died!");
-		this.loseGame();
-		playSoundEffect('snd/die.ogg');
+				this.loseGame();
+				playSoundEffect('snd/die.ogg');
         cat.timeLeft -= 1;
         this.cats.splice(i, 1);
         this.deadCats.push(cat);
@@ -346,9 +404,7 @@ function LevelLayer(info) {
 		if(this.winClause() && !this.gameLost) {
 			drawButtonImage("completed", 100, 90);
 			$.each(this.buttons, function(i, button) {
-				if(button.texture != "tryagain") {
-					button.render();
-				}
+				button.render();
 			});
 		}
 		if(this.gameLost)
@@ -364,16 +420,18 @@ function LevelLayer(info) {
   this.spawnItem = function() {
     this.itemInHand = createFood(this.hand);
     this.itemInHand.SetActive(false);
-	playSoundEffect('snd/puff.ogg');
+		playSoundEffect('snd/puff.ogg');
   };
 
   this.dropItem = function() {
     var droppedItem = this.itemInHand;
-    this.items.push(droppedItem);
-	catAI.updateFood(this.items);
-    droppedItem.SetActive(true);
-	this.itemInHand = null;
-	playSoundEffect('snd/slip.ogg');
+		if (droppedItem !== null) {
+			this.items.push(droppedItem);
+			catAI.updateFood(this.items);
+			droppedItem.SetActive(true);
+			this.itemInHand = null;
+			playSoundEffect('snd/slip.ogg');
+		}
   };
 	
 	// Remove item, return whether item was in list
@@ -409,37 +467,42 @@ function LevelLayer(info) {
 	};
 	
 	this.loseGame = function() {
-		this.gameLost = true;
-		this.buttons.push(createButton({
-			type: button.type.rectangular,
-			x: 300,
-			y: 340,
-			width: 200,
-			height: 50,
-			texture: "tryagain",
-			callback: function() {
-				game.layer.pop();
-				game.layer.push(createLevel(this.levelNumber));
-			}
-		}));
+		if (!this.gameLost) {
+			this.gameLost = true;
+			this.buttons.push(createButton({
+				type: button.type.rectangular,
+				x: 300,
+				y: 340,
+				width: 200,
+				height: 50,
+				texture: "tryagain",
+				levelNumber: this.levelNumber,
+				callback: function() {
+					game.layer.pop();
+					game.layer.push(createLevel(this.levelNumber));
+				}
+			}));
+		}
 	};
 	
 	this.gameWon = function() {
-		if (this.levelNumber < amountOfLevels() - 1) {
-					this.buttons.push(createButton({
-						type: button.type.rectangular,
-						x: 300,
-						y: 340,
-						width: 200,
-						height: 50,
-						texture: "nextlevel",
-						levelNumber: this.levelNumber,
-						callback: function() {
-							game.layer.pop();
-							game.layer.push(createLevel(this.levelNumber + 1));
-						}
-					}));
-				}
+		if(this.buttons.length < 2) {
+			if (this.levelNumber < amountOfLevels() - 1) {
+				this.buttons.push(createButton({
+					type: button.type.rectangular,
+					x: 300,
+					y: 340,
+					width: 200,
+					height: 50,
+					texture: "nextlevel",
+					levelNumber: this.levelNumber,
+					callback: function() {
+						game.layer.pop();
+						game.layer.push(createLevel(this.levelNumber + 1));
+					}
+				}));
+			}
+		}
 	};
 };
 

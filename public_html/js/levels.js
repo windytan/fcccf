@@ -29,7 +29,7 @@ function createLevel(levelNumber) {
 var levelInfo = [
 	{
 		cats: 1,
-		scoreGoal: 10
+		scoreGoal: 1
 	},
 	{
 		cats: 3,

@@ -19,7 +19,7 @@ var gameWorld = {
 	gravity: 9.81,
 	velocityIterations: 16,
 	positionIterations: 6,
-	allowSleep: true,
+	allowSleep: false,
 	timeStep: 1 / 120,
 
 	init: function() {
