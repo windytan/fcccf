@@ -75,9 +75,8 @@ var creditsLayer = {
 	
 	render: function() {
 		clearScreen();
-		ctx.fillStyle = "#000000";
-		ctx.font = "20px Arial";
-		ctx.fillText("Credits", 100, 100);
+		drawBackground("ingame");
+		drawBackground("credits");
 	},
 	
 	onClick: function() {
@@ -98,6 +97,7 @@ var levelLayer = {
 	items: [],
 	levelNumber: 0,
 	dropCooldown: 0,
+	score: 0,
 	props: [],
 	cats: [],
 	deadCats: [],
@@ -245,6 +245,11 @@ var levelLayer = {
 			drawItem(this.itemInHand);
 		}
 		drawBackground("foreground");
+		ctx.fillStyle = "#FFFFFF";
+		ctx.font = "20px Arial";
+		ctx.fillText("Score: ", 520, 630);
+		ctx.fillStyle = "#FF00FF";
+		ctx.fillText(this.score , 600, 631);
 	},
 
   spawnItem: function () {
@@ -270,6 +275,7 @@ var levelLayer = {
 				this.items.splice(i, 1);
 				catAI.updateFood(this.items);
 				playSoundEffect('snd/omnom' + soundEffectVariator(2) + '.ogg');
+				this.score++;
 				return true;
 			}
 		}

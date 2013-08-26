@@ -26,7 +26,8 @@ var imageDefs = {
   background: {
     menu: "titleScreen.jpg",
     ingame: "background.png",
-    foreground: "foreground.png"
+    foreground: "foreground.png",
+	credits: "credits.png"
   },
   props: {
     propeller: "woodplank.png"
