@@ -103,13 +103,9 @@ function randomColor () {
 
 
 function validSpawnSpot(position, catPosiArray) {
-	var distance = 0;
-  var i;
-	for(i = 0; i < catPosiArray.length; i++)
-	{
-		distance = Math.sqrt(Math.pow((catPosiArray[i].x-position.x), 2) + Math.pow((catPosiArray[i].y-position.y), 2));
-		if(distance < catDefs.spawnDistance) 
-		{
+	for (var i = 0; i < catPosiArray.length; i++) {
+		var distance = Math.sqrt(Math.pow((catPosiArray[i].x-position.x), 2) + Math.pow((catPosiArray[i].y-position.y), 2));
+		if (distance < catDefs.spawnDistance) {
 			return false;
 		}
 	}
@@ -117,19 +113,23 @@ function validSpawnSpot(position, catPosiArray) {
 }
 
 
-function generateCats() {
+function generateCats(info) {
 	var catLocations = [];
 	var numCats = catDefs.minAmount + Math.random()*catDefs.maxAmount;
-	var spawnSpot;
   var cats = [];
-  var i = 0;
-	for (i = 0; i < numCats-1; i++)
-	{
-		spawnSpot = {x: Math.random()*(ctx.canvas.width-catDefs.width/2), y: ctx.canvas.height-catDefs.height/2- Math.random()*catDefs.maxSpawnY};
-		while(!validSpawnSpot(spawnSpot, catLocations))
-		{
-			spawnSpot = {x: Math.random()*(ctx.canvas.width-catDefs.width/2), y: ctx.canvas.height-catDefs.height/2- Math.random()*catDefs.maxSpawnY};
-		}
+	
+	defaults.catGeneration(info);
+	var xMin = info.xMin;
+	var xMax = info.xMax;
+	var yMin = info.yMin;
+	var yMax = info.yMax;
+	
+	for (var i = 0; i < info.cats; i++) {
+		var spawnSpot;
+		do {
+			spawnSpot = {x: Math.random()*(xMax-xMin)+xMin, y: Math.random()*(yMax-yMin)+yMin};
+		} while (!validSpawnSpot(spawnSpot, catLocations));
+		
 		catLocations[i] = spawnSpot;
 		var cat = createCat(catLocations[i]);
     cats.push(cat);
@@ -153,25 +153,40 @@ var catAI = {
 	    this.zeFood = foodz;
 	},
 	
-    logic: function() {
-	    var position;
-			var angle = 0;
-			var j = 0;
-	    if(0<this.cats.length) {
-		    for(j = 0; j < this.cats.length; j++) {
-				this.rotate(this.cats[j]);
-				
-				if(this.cats[j].GetLinearVelocity().Length()<this.actionCap) {
-					position = this.nearestFood(j);
-					if(position!==0) {
-						angle = this.angleInRadians(this.cats[j].GetPosition(), position);
-						var force = new Box2D.Common.Math.b2Vec2(Math.cos(angle) * catDefs.jumpingPower, 
-																							Math.sin(angle) * catDefs.jumpingPower);
-						this.cats[j].ApplyImpulse(force, this.cats[j].GetPosition());
-					}
-				}
-			}
-		}
+  logic: function() {
+    var position;
+    var angle = 0;
+    var j = 0;
+    // if(0<this.cats.length) {
+      // for(j = 0; j < this.cats.length; j++) {
+      // this.rotate(this.cats[j]);
+      
+      // if(this.cats[j].GetLinearVelocity().Length()<this.actionCap) {
+        // position = this.nearestFood(j);
+        // if(position!==0) {
+          // angle = this.angleInRadians(this.cats[j].GetPosition(), position);
+          // var force = new Box2D.Common.Math.b2Vec2(Math.cos(angle) * catDefs.jumpingPower, 
+                                            // Math.sin(angle) * catDefs.jumpingPower);
+          // this.cats[j].ApplyImpulse(force, this.cats[j].GetPosition());
+          // playSoundEffect('snd/bounce'+soundEffectVariator(3)+'.ogg');
+        // }
+      // }
+    // }
+    this.cats.forEach(function (cat) {
+      var pos = cat.GetPosition();
+      var pixPos = mToPx(pos);
+      var isNearGround = pixPos.y > ctx.canvas.height * 0.95;
+      var v = cat.GetLinearVelocity().Length();
+      var isSlow = v < 5.0;
+      if (isNearGround && isSlow) {
+        var rad = Math.random() * Math.PI; // 180 degrees
+        var power = catDefs.jumpingPower;
+        var push = new Box2D.Common.Math.b2Vec2(Math.cos(rad) * power,
+                                                -Math.sin(rad) * power);
+        cat.ApplyImpulse(push, pos);
+		playSoundEffect('snd/bounce'+soundEffectVariator(3)+'.ogg');
+      }
+    });
 	},
 	
 	nearestFood: function(index) {
@@ -183,7 +198,6 @@ var catAI = {
 		if (0<this.zeFood.length) {
             for(i = 0; i < this.zeFood.length; i++)
 		    {
-				console.log(foodState(this.zeFood[i]));
 				if (foodState(this.zeFood[i]) !== "rotten") {
 					d = this.distance(this.cats[index].GetPosition(), this.zeFood[i].GetPosition());
 					if(d<shortestD)

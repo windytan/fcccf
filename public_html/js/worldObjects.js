@@ -92,5 +92,9 @@ function createPropeller(def) {
 		torque: def.torque,
 		clockwise: def.clockwise
 	});
+
+  propeller.propType = "propeller";
+	propeller.SetUserData(def);
+  return propeller;
 }
 

@@ -1,8 +1,23 @@
-var debug = true;
-var startingLayer = levelLayer;
-var startingLevelNumber = 0;
+var debug = false;
+var startingLayer = menuLayer;
+var startingLevelNumber = 2;
 
 var ctx;
+
+
+var global = {
+	shape: {
+		circle: 1,
+		rectangular: 2,
+		polygon: 3
+	},
+	hand: {
+		y: 75,
+		gapToWalls: 65
+	},
+	dropCooldown: 60
+};
+
 
 $(document).ready(function() {
   var canvas = $("canvas")[0];
@@ -103,6 +118,8 @@ var game = {
 
 	render: function() {
 		this.currentLayer().render();
+		
+		drawCursor();
 	},
 
   onClick: function (event, cursor) {
@@ -119,11 +136,13 @@ var game = {
 
   updateCursor: function (cursor) {
     var layer = game.currentLayer();
+		/*
     if (layer.upperBorder !== undefined) {
       if (cursor.y > layer.upperBorder) {
         cursor.y = layer.upperBorder;
       }
     }
+		*/
     game.cursor = cursor;
   },
 
@@ -141,6 +160,14 @@ function startMusic() {
   music.play();
 }
 
+function playSoundEffect(name) {
+	var snd = new Audio(name);
+	snd.play();
+}
+
+function soundEffectVariator(maxIndex) {
+	return Math.floor(Math.random()*maxIndex+1);
+}
 
 window.requestAnimFrame = (function(){
   return window.requestAnimationFrame		  ||

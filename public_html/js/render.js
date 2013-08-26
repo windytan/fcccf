@@ -3,6 +3,10 @@ var itemTextureOverBody = 2;
 
 
 var imageDefs = {
+  hand: {
+    normal: "player.png"
+  },
+
   cat: {
     normal: "cat_normal_texture.png",
     hungry: "cat_hungry_texture.png",
@@ -20,9 +24,13 @@ var imageDefs = {
     rotten: "fish_rotten.png"
   },
   background: {
-	menu: "titleScreen.jpg",
-	ingame: "background.png",
-	foreground: "foreground.png"
+    menu: "titleScreen.jpg",
+    ingame: "background.png",
+    foreground: "foreground.png",
+	credits: "credits.png"
+  },
+  props: {
+    propeller: "woodplank.png"
   }
 };
 
@@ -51,6 +59,26 @@ function transformWorld (thingy) {
 }
 
 
+function drawProp (prop) {
+  if (prop.propType === "propeller") {
+    ctx.save();
+    transformWorld(prop);
+    // console.log(mToPx(prop.GetPosition()));
+    var type = prop.propType;
+    var img = game.images.props[type];
+    var def = prop.m_userData;
+    defaults.propeller(def);
+    var w = def.width;
+    var h = def.height;
+    ctx.drawImage(img, -w/2, -h/2, w, h);
+    ctx.restore();
+  }
+  else {
+    console.log("Unknown prop type:", prop.propType);
+  }
+}
+
+
 function drawCat (cat) {
   ctx.save();
   transformWorld(cat);
@@ -66,6 +94,15 @@ function drawCat (cat) {
   ctx.restore();
 }
 
+
+function drawHand(x, y) {
+	var img = game.images.hand.normal;
+	var w = img.width;
+	var h = img.height;
+	ctx.translate(x, y);
+	ctx.drawImage(img, -w / 2, -h / 2 - 20, w, h);
+	ctx.restore();
+}
 
 function drawItem (item) {
   ctx.save();
@@ -88,10 +125,20 @@ function drawItem (item) {
   ctx.restore();
 }
 
-function drawBackground(gameState) 
-{
+function drawBackground(gameState) {
 	ctx.save();
 	var img = game.images.background[gameState];
 	ctx.drawImage(img, 0, 0);
 	ctx.restore();
+}
+
+
+
+function drawCursor() {
+	ctx.beginPath();
+	ctx.strokeStyle = "#000000";
+	ctx.arc(game.cursor.x, game.cursor.y, 7, 0, 2*Math.PI);
+	ctx.stroke();
+	ctx.fillStyle = "#ffc0cb";
+	ctx.fill();
 }
