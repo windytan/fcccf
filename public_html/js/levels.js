@@ -33,13 +33,13 @@ var levelInfo = [
 	},
 	{
 		cats: 3,
-		scoreGoal: 50,
+		scoreGoal: 10,
 		propellers: [{x: 650, y: 430}]
 	},
 	{
 		cats: 4,
 		yMax: 500,
-		scoreGoal: 0,
+		scoreGoal: 15,
 		propellers: miniPropellers()
 	}
 ];

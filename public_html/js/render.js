@@ -100,7 +100,16 @@ function drawCat (cat) {
   var state = catState(cat);
   var img = game.images.cat[state];
   var c = cat.catColor;
-  ctx.fillStyle = "rgb(" + c.r + "," + c.g + "," + c.b + ")";
+  var hunger = 1 - Math.max(0, cat.timeLeft) / catDefs.timeLeft;
+  var ac = {
+    r: Math.floor(Math.max(c.r, 128 * (1 + hunger))),
+    g: Math.floor(c.g * (1 - 0.75 * hunger)),
+    b: Math.floor(c.b * (1 - 0.75 * hunger))
+    // g: c.g,
+    // b: c.b
+  };
+  console.log(ac, 255 * hunger);
+  ctx.fillStyle = "rgb(" + ac.r + "," + ac.g + "," + ac.b + ")";
   ctx.fillRect(-w/2, -h/2, w, h);
   ctx.drawImage(img, -w/2-o, -h/2-o, w+o*2, h+o*2);
   ctx.restore();
@@ -114,7 +123,28 @@ function drawHand(x, y) {
 	ctx.translate(x, y);
 	ctx.drawImage(img, -w / 2, -h / 2 - 20, w, h);
 	ctx.restore();
+	
+	var number = game.currentLayer().eventTimer / 60;
+	number = Math.ceil(number);
+	ctx.font = "30px Arial";
+	ctx.textAlign = "center";
+	ctx.fillStyle = rainbowGradient();
+
+	ctx.fillText(number, x, y-45);
+	ctx.strokeText(number, x, y-45);
 }
+
+function rainbowGradient() {
+	var grd = ctx.createLinearGradient(0, 640, 800, 0);
+	var gradientStops = 300;
+
+	for (var i = 0; i < gradientStops; ++i) {
+		var color = ["#FF0000", "#FF7F00", "#FFFF00", "#00FF00", "#0000FF", "#4B0082", "#8F00FF"];
+		grd.addColorStop(i/gradientStops, color[i % color.length]);
+	}
+	return grd;
+}
+
 
 function drawItem (item) {
   ctx.save();

@@ -97,7 +97,7 @@ function randomColor () {
   }
   while (b > r && b > g);
 
-  return { r: bottom + r,  g: bottom + g, b: bottom + b };
+  return { r: r + bottom,  g: g + bottom, b: b + bottom };
 }
 
 
@@ -262,8 +262,6 @@ var catAI = {
 			change -= angle * catDefs.rotationMultiplier.over90Degrees;
 		
 		change -= cat.m_angularVelocity * catDefs.rotationMultiplier.velocityReducer;
-		
-		console.log(change);
 		
 		cat.m_angularVelocity += change;
 	}
