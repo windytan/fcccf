@@ -56,25 +56,31 @@ var levelInfo = [
 		propellers: funnelLevelPropellers()
 	},
 	{
-		cats: 3,
-		scoreGoal: 30
+		cats: 4,
+		scoreGoal: 30,
+		xMin: 300,
+		xMax: 500,
+		yMin: 300,
+		yMax: 410,
+		propellers: ballLevelPropellers()
 	},
 	{
 		cats: 3,
-		scoreGoal: 50
+		scoreGoal: 60,
+		propellers: halfCirclePropels()
 	},
 	{
 		cats: 5,
 		yMin:300,
 		yMax: 100,
-		scoreGoal: 50
+		scoreGoal: 30,
+		propellers: propellerRoof()
 	},
 	{
 		cats: 3,
 		yMax: 430,
 		scoreGoal: 40,
 		propellers: propellerwall()
-
 	}
 	
 ];
@@ -82,6 +88,71 @@ var levelInfo = [
 
 function amountOfLevels() {
 	return levelInfo.length;
+}
+
+function massStationaryPropel(x, y, width, height, speed, angle, distance, amount, torque) 
+{
+	var propellers = [];
+	for(var i = 0; i<amount; ++i) {
+		propellers.push({
+					x: x + i * distance,
+					y: y,
+					width: width,
+					height: height,
+					speed: speed,
+					angle: angle,
+					torque: torque,
+					clockwise: true
+				});
+	}
+	return propellers;
+}
+
+function halfCirclePropels() {
+	var width = 120;
+	var height = 8;
+	var propellers = [];
+	for(var i = 270; i > 150; i -= 30) {
+		propellers.push({
+					x: 400 + 300*Math.cos(i * (180/Math.PI)),			
+					y: 300 + 300*Math.sin(i * (180/Math.PI)),
+					width: width,
+					height: height,
+					angle: Math.random() * 360,
+					clockwise: Math.random() < 0.5
+				});
+	}
+	propellers.push({
+					x: 400,
+					y: 560,
+					width: width,
+					height: height,
+					clockwise: true
+				});
+	return propellers;
+}
+
+function propellerRoof() {
+	var x = 50;
+	var y = 400;
+	var width = 60;
+	var height = 8;
+	var speed = 0;
+	var angle = 0;
+	var propellers = [];
+    var distance = 70;
+	propellers = propellers.concat(massStationaryPropel(x, y, width, height, speed, angle, distance, 4, 100000));
+	propellers = propellers.concat(massStationaryPropel(530, y, width, height, speed, angle, distance, 4, 100000));
+	propellers.push({
+				x: 400,
+				y: 400,
+				width: 160,
+				height: 8,
+				speed: 0,
+				torque: 0,
+				clockwise: false
+			});
+	return propellers
 }
 
 function propellerwall() {
@@ -93,18 +164,7 @@ function propellerwall() {
 	var angle = 0;
 	var propellers = [];
     var distance = 120;
-	for(var i = 0; i < 5; ++i) {
-		propellers.push({
-				x: x + i * distance,
-				y: y,
-				width: width,
-				height: height,
-				speed: speed,
-				angle: angle,
-				torque: 0,
-				clockwise: true
-			});
-	}
+	propellers = massStationaryPropel(x, y, width, height, speed, angle, distance, 5, 0);
 	propellers.push({
 				x: 25,
 				y: 509,
@@ -198,6 +258,81 @@ function funnelLevelPropellers() {
 		width: 100,
 		speed: 1080,
 		clockwise: Math.random() < 0.5
+	});
+	
+	return propellers;
+}
+
+
+function ballLevelPropellers() {
+	var propellers = [];
+	
+	var x1 = 330;
+	var y1 = 250;
+	var angle1 = 25;
+	
+	var x2 = 250;
+	var y2 = 350;
+	var angle2 = 90;
+	
+	var x3 = 330;
+	var y3 = 450;
+	var angle3 = 155;
+	
+	var width = 120;
+	var speed = 45;
+	
+	var direction = false;
+	
+	propellers.push({
+		x: x1,
+		y: y1,
+		width: width,
+		angle: -angle1,
+		speed: speed,
+		clockwise: direction
+	});
+	propellers.push({
+		x: 800 - x1,
+		y: y1,
+		width: width,
+		angle: angle1,
+		speed: speed,
+		clockwise: !direction
+	});
+	
+	propellers.push({
+		x: x2,
+		y: y2,
+		width: width,
+		angle: -angle2,
+		speed: speed,
+		clockwise: direction
+	});
+	propellers.push({
+		x: 800 - x2,
+		y: y2,
+		width: width,
+		angle: angle2,
+		speed: speed,
+		clockwise: !direction
+	});
+	
+	propellers.push({
+		x: x3,
+		y: y3,
+		width: width,
+		angle: -angle3,
+		speed: speed,
+		clockwise: direction
+	});
+	propellers.push({
+		x: 800 - x3,
+		y: y3,
+		width: width,
+		angle: angle3,
+		speed: speed,
+		clockwise: !direction
 	});
 	
 	return propellers;

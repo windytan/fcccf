@@ -245,9 +245,9 @@ function LevelLayer(info) {
 			var multiplier = Math.random() + 2;
 			
 			if (Math.random() < 0.5)
-				world.SetGravity({x: gameWorld.gravity*multiplier, y: 2.5});
+				world.SetGravity({x: gameWorld.gravity*multiplier, y: 3});
 			else
-				world.SetGravity({x: -gameWorld.gravity*multiplier, y: 2.5});
+				world.SetGravity({x: -gameWorld.gravity*multiplier, y: 3});
 			
 			levelLayer.goingEventCallBack = function() {
 				world.SetGravity({x: 0, y: gameWorld.gravity});
@@ -265,7 +265,7 @@ function LevelLayer(info) {
 		this.moveHand();
 		
 		if (!this.gameLost) {
-			this.eventTimer -= 1; // TÄMÄ KUULUU OLLA 1 ----------------------
+			this.eventTimer -= 1;
 		}
 		
     if (this.eventTimer <= 0 && this.events.length > 0) {
