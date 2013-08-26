@@ -94,6 +94,15 @@ function drawCat (cat) {
 }
 
 
+function drawHand(x, y) {
+	var img = game.images.hand.normal;
+	var w = img.width;
+	var h = img.height;
+	ctx.translate(x, y);
+	ctx.drawImage(img, -w / 2, -h / 2 - 20, w, h);
+	ctx.restore();
+}
+
 function drawItem (item) {
   ctx.save();
   transformWorld(item);

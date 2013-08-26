@@ -4,6 +4,20 @@ var startingLevelNumber = 0;
 
 var ctx;
 
+
+var global = {
+	shape: {
+		circle: 1,
+		rectangular: 2,
+		polygon: 3
+	},
+	hand: {
+		y: 75,
+		gapToWalls: 65
+	}
+};
+
+
 $(document).ready(function() {
   var canvas = $("canvas")[0];
 	ctx = canvas.getContext("2d");
@@ -121,11 +135,13 @@ var game = {
 
   updateCursor: function (cursor) {
     var layer = game.currentLayer();
+		/*
     if (layer.upperBorder !== undefined) {
       if (cursor.y > layer.upperBorder) {
         cursor.y = layer.upperBorder;
       }
     }
+		*/
     game.cursor = cursor;
   },
 

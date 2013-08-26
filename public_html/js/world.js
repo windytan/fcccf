@@ -30,13 +30,7 @@ var gameWorld = {
 
 
 
-var global = {
-	shape: {
-		circle: 1,
-		rectangular: 2,
-		polygon: 3
-	}
-};
+
 
 
 var defaults = {
