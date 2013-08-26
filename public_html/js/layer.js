@@ -265,7 +265,7 @@ function LevelLayer(info) {
 		this.moveHand();
 		
 		if (!this.gameLost) {
-			this.eventTimer -= 1; // TÄMÄ KUULUU OLLA 1 ----------------------
+			this.eventTimer -= 1;
 		}
 		
     if (this.eventTimer <= 0 && this.events.length > 0) {

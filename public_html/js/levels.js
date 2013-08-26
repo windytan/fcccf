@@ -56,8 +56,13 @@ var levelInfo = [
 		propellers: funnelLevelPropellers()
 	},
 	{
-		cats: 3,
-		scoreGoal: 30
+		cats: 4,
+		scoreGoal: 30,
+		xMin: 300,
+		xMax: 500,
+		yMin: 300,
+		yMax: 410,
+		propellers: ballLevelPropellers()
 	},
 	{
 		cats: 3,
@@ -253,6 +258,81 @@ function funnelLevelPropellers() {
 		width: 100,
 		speed: 1080,
 		clockwise: Math.random() < 0.5
+	});
+	
+	return propellers;
+}
+
+
+function ballLevelPropellers() {
+	var propellers = [];
+	
+	var x1 = 330;
+	var y1 = 250;
+	var angle1 = 25;
+	
+	var x2 = 250;
+	var y2 = 350;
+	var angle2 = 90;
+	
+	var x3 = 330;
+	var y3 = 450;
+	var angle3 = 155;
+	
+	var width = 120;
+	var speed = 45;
+	
+	var direction = false;
+	
+	propellers.push({
+		x: x1,
+		y: y1,
+		width: width,
+		angle: -angle1,
+		speed: speed,
+		clockwise: direction
+	});
+	propellers.push({
+		x: 800 - x1,
+		y: y1,
+		width: width,
+		angle: angle1,
+		speed: speed,
+		clockwise: !direction
+	});
+	
+	propellers.push({
+		x: x2,
+		y: y2,
+		width: width,
+		angle: -angle2,
+		speed: speed,
+		clockwise: direction
+	});
+	propellers.push({
+		x: 800 - x2,
+		y: y2,
+		width: width,
+		angle: angle2,
+		speed: speed,
+		clockwise: !direction
+	});
+	
+	propellers.push({
+		x: x3,
+		y: y3,
+		width: width,
+		angle: -angle3,
+		speed: speed,
+		clockwise: direction
+	});
+	propellers.push({
+		x: 800 - x3,
+		y: y3,
+		width: width,
+		angle: angle3,
+		speed: speed,
+		clockwise: !direction
 	});
 	
 	return propellers;
